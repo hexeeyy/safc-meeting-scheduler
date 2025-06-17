@@ -59,9 +59,8 @@ export default function BigCalendar() {
   });
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white shadow-lg rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Event Calendar</h1>
-      <div className="h-[600px]">
+    <div className="p-4 bg-white rounded-2xl">
+      <div className="h-[600px] max-w-screen mx-auto">
         <Calendar
           localizer={localizer}
           events={events}

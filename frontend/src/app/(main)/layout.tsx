@@ -59,15 +59,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.variable} antialiased`}>
-        <HeaderNav />
-        {/* <SidebarProvider>
-          <AppSidebar />
-          <main className="flex flex-col md:flex-row">
-            <SidebarTrigger className="-ml-1" />
-            <div className="flex-1 p-4">{children}</div>
-          </main>
-          <BigCalendar />
-        </SidebarProvider> */}
+        <div className="flex min-h-screen flex-col bg-background">
+          <HeaderNav />
+            {/* <SidebarProvider>
+              <AppSidebar />
+                <SidebarTrigger className="" />
+              
+            </SidebarProvider> */}
+            {/* <BigCalendar /> */}
+        </div>
       </body>
     </html>
   );

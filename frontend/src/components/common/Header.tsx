@@ -41,31 +41,72 @@ export default function HeaderNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="h-25 shadow-sm bg-off-white" style={{ fontFamily: 'var(--font-poppins)' }}>
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-5 lg:px-2">
+    <header className="h-18 bg-off-white" style={{ fontFamily: 'var(--font-poppins)' }}>
+      <nav aria-label="Global" className="mx-auto m-1 flex max-w-screen items-center justify-between p-3 lg:px-2">
         <div className="flex lg:flex-1">
           <a className="-m-5 p-5 flex gap-2">
+            <div className="flex lg:h-fit">
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                className="flex items-center justify-center rounded-full p-2.5 text-gray-700 hover:bg-gray-200 transition-colors ">
+                <span className="sr-only">Open main menu</span>
+                <Bars3Icon aria-hidden="false" className="size-6" />
+              </button>
+            </div>
             <Image
               alt="Logo"
               src={logo}
-              className="h-15 w-15 rounded-lg"
+              className="h-12 w-12 rounded-lg"
             />
-            <span className="flex items-center justify-center font-semibold text-black text-lg">
+            <span className="flex items-center justify-center font-light text-black text-lg">
               Meeting Scheduler
             </span>
           </a>
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Navigation buttons */}
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "TODAY" }))}
+              className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+            >
+              Today
+            </button>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "PREV" }))}
+              className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "NEXT" }))}
+              className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
+            >
+              →
+            </button>
+
+            {/* View selectors */}
+            {["month", "week", "day"].map((view) => (
+              <button
+                key={view}
+                onClick={() => window.dispatchEvent(new CustomEvent("calendar:view", { detail: view }))}
+                className="text-sm px-3 py-1 rounded bg-blue-100 hover:bg-blue-200 capitalize"
+              >
+                {view}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex lg:hidden">
+        
+        {/* <div className="flex lg:hidden">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-          >
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
             <span className="sr-only">Open main menu</span>
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
-        </div>
-        <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+        </div> */}
+        {/* <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
               Product
@@ -119,14 +160,14 @@ export default function HeaderNav() {
           <a href="#" className="text-sm/6 font-semibold text-gray-900">
             Company
           </a>
-        </PopoverGroup>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+        </PopoverGroup> */}
+        {/* <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="#" className="text-sm/6 font-semibold text-gray-900">
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
-        </div>
+        </div> */}
       </nav>
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
+      {/* <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-50" />
         <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
@@ -198,7 +239,7 @@ export default function HeaderNav() {
             </div>
           </div>
         </DialogPanel>
-      </Dialog>
+      </Dialog> */}
     </header>
   )
 }
