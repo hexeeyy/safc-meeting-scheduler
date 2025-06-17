@@ -24,6 +24,7 @@ import {
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { logo } from '@/assets'
+import { DropdownMenu } from '@radix-ui/react-dropdown-menu'
 
 const products = [
   { name: 'Analytics', description: 'Get a better understanding of your traffic', href: '#', icon: ChartPieIcon },
@@ -49,7 +50,7 @@ export default function HeaderNav() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(true)}
-                className="flex items-center justify-center rounded-full p-2.5 text-gray-700 hover:bg-gray-200 transition-colors ">
+                className="flex items-center justify-center rounded-full p-2.5 text-gray-700 hover:bg-gray-100 transition-colors ">
                 <span className="sr-only">Open main menu</span>
                 <Bars3Icon aria-hidden="false" className="size-6" />
               </button>
@@ -71,11 +72,11 @@ export default function HeaderNav() {
               </button>
               <div className="flex items-center gap-2 ml-4">
                   <button onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "PREV" }))}
-                  className="p-2 rounded-full bg-white hover:bg-gray-300">
+                  className="p-2 rounded-full bg-white hover:bg-gray-100">
                     <ChevronLeftIcon className="h-5 w-5 text-black" />
                   </button>
                   <button onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "NEXT" }))}
-                  className="p-2 rounded-full bg-white hover:bg-gray-300">
+                  className="p-2 rounded-full bg-white hover:bg-gray-100">
                     <ChevronRightIcon className="h-5 w-5 text-black" />
                   </button>
               </div>
@@ -95,7 +96,7 @@ export default function HeaderNav() {
             </div>
         </div>
         
-        {/* <div className="flex lg:hidden">
+        <div className="flex lg:hidden">
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
@@ -103,8 +104,8 @@ export default function HeaderNav() {
             <span className="sr-only">Open main menu</span>
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
-        </div> */}
-        {/* <PopoverGroup className="hidden lg:flex lg:gap-x-12">
+        </div> 
+        {/* {/* <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           <Popover className="relative">
             <PopoverButton className="flex items-center gap-x-1 text-sm/6 font-semibold text-gray-900">
               Product
