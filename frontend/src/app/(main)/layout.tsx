@@ -66,7 +66,7 @@ export default function RootLayout({
                 <SidebarTrigger className="" />
               
             </SidebarProvider> */}
-            {/* <BigCalendar /> */}
+            <BigCalendar />
         </div>
       </body>
     </html>

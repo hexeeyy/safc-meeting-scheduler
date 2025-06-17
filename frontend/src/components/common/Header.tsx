@@ -21,7 +21,7 @@ import {
   SquaresPlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { logo } from '@/assets'
 
@@ -42,7 +42,7 @@ export default function HeaderNav() {
 
   return (
     <header className="h-18 bg-off-white" style={{ fontFamily: 'var(--font-poppins)' }}>
-      <nav aria-label="Global" className="mx-auto m-1 flex max-w-screen items-center justify-between p-3 lg:px-2">
+      <nav aria-label="Global" className="mx-1auto m-1 flex max-w-screen items-center justify-between p-3 lg:px-2">
         <div className="flex lg:flex-1">
           <a className="-m-5 p-5 flex gap-2">
             <div className="flex lg:h-fit">
@@ -62,39 +62,37 @@ export default function HeaderNav() {
             <span className="flex items-center justify-center font-light text-black text-lg">
               Meeting Scheduler
             </span>
-          </a>
-          <div className="flex items-center gap-2 ml-auto">
-            {/* Navigation buttons */}
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "TODAY" }))}
-              className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-            >
-              Today
-            </button>
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "PREV" }))}
-              className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-            >
-              ←
-            </button>
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "NEXT" }))}
-              className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300"
-            >
-              →
-            </button>
-
-            {/* View selectors */}
-            {["month", "week", "day"].map((view) => (
+            <div className="flex items-center justify-center">
               <button
-                key={view}
-                onClick={() => window.dispatchEvent(new CustomEvent("calendar:view", { detail: view }))}
-                className="text-sm px-3 py-1 rounded bg-blue-100 hover:bg-blue-200 capitalize"
+                onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "TODAY" }))}
+                className="text-sm px-5 py-2 rounded-4xl border-1 border-black bg-white hover:bg-gray-100 ml-20"
               >
-                {view}
+                Today
               </button>
-            ))}
-          </div>
+              <div className="flex items-center gap-2 ml-4">
+                  <button onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "PREV" }))}
+                  className="p-2 rounded-full bg-white hover:bg-gray-300">
+                    <ChevronLeftIcon className="h-5 w-5 text-black" />
+                  </button>
+                  <button onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "NEXT" }))}
+                  className="p-2 rounded-full bg-white hover:bg-gray-300">
+                    <ChevronRightIcon className="h-5 w-5 text-black" />
+                  </button>
+              </div>
+            </div>
+          </a>
+            <div className="flex items-center gap-2 ml-auto">
+              {/* View selectors */}
+              {["month", "week", "day"].map((view) => (
+                <button
+                  key={view}
+                  onClick={() => window.dispatchEvent(new CustomEvent("calendar:view", { detail: view }))}
+                  className="text-sm px-3 py-1 rounded bg-blue-100 hover:bg-blue-200 capitalize"
+                >
+                  {view}
+                </button>
+              ))}
+            </div>
         </div>
         
         {/* <div className="flex lg:hidden">
