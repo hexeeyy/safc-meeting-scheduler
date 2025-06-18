@@ -8,16 +8,6 @@ import { AppSidebar } from "@/components/ui/App-sidebar";
 import BigCalendar from "@/components/calendar/Calendar";
 import HeaderNav from "@/components/common/Header";
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"], // choose the weights you need
@@ -41,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "SAFC Scheduler",
     images: [
       {
-        url: "",
+        url: "https://github.com/hexeeyy/safc-meeting-scheduler/blob/main/frontend/src/app/favicon.ico",
         width: 1200,
         height: 630,
         alt: "SAFC Scheduler",
@@ -58,15 +48,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
-        <div className="flex min-h-screen flex-col bg-background">
+      <body className={`${poppins.variable} font-sans antialiased`}>
+        <div className="flex min-h-screen flex-col">
           <HeaderNav />
             {/* <SidebarProvider>
               <AppSidebar />
                 <SidebarTrigger className="" />
               
             </SidebarProvider> */}
-            <BigCalendar />
         </div>
       </body>
     </html>
