@@ -131,7 +131,7 @@ export default function HeaderNav() {
                         }}
                         className={`${
                           active || activeView === view
-                            ? 'bg-green-50 text-black'
+                            ? 'bg-green-50 text-green-950 rounded'
                             : ''
                         } w-full text-left px-3 py-2 text-sm capitalize rounded transition-colors duration-300 ease-in-out hover:py-2`}
                       >
