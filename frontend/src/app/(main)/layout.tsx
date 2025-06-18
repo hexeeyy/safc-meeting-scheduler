@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css";
+import "../globals.css"; 
 
 import React from "react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/Sidebar";
-import { AppSidebar } from "@/components/ui/App-sidebar";
-import BigCalendar from "@/components/calendar/Calendar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 import HeaderNav from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -47,17 +47,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} font-sans antialiased`}>
+    <html lang="en" className={poppins.variable}>
+      <body className= "font-poppins">{children}
         <div className="flex min-h-screen flex-col">
           <HeaderNav />
+          <main className="flex-grow">{children}</main>
             {/* <SidebarProvider>
               <AppSidebar />
                 <SidebarTrigger className="" />
               
             </SidebarProvider> */}
+            <Footer />
         </div>
       </body>
     </html>
+    
   );
 }
