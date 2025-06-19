@@ -51,7 +51,7 @@ export default function BigCalendar() {
   // Custom event styling
   const eventPropGetter = (event: CalendarEvent) => ({
     style: {
-      backgroundColor: event.color || "#3174ad", // Default color if none provided
+      backgroundColor: event.color || "#3174ad",
       color: "white",
       borderRadius: "3px",
       border: "none",
@@ -59,8 +59,8 @@ export default function BigCalendar() {
   });
 
   return (
-    <div className="p-4 bg-white rounded-2xl">
-      <div className="h-[600px] max-w-screen mx-auto">
+    <div className="rounded-2xl my-4 mx-2">
+      <div className="h-[840px] max-w-screen mx-auto">
         <Calendar
           localizer={localizer}
           events={events}
@@ -70,7 +70,7 @@ export default function BigCalendar() {
           views={["month", "week", "day"]}
           eventPropGetter={eventPropGetter}
           onSelectEvent={(event) => alert(`Event: ${event.title}\nStart: ${event.start?.toLocaleString()}`)}
-          className="rounded-md border"
+          className="rounded-2xl p-4 bg-white"
         />
       </div>
     </div>

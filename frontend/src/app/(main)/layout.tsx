@@ -3,10 +3,10 @@ import { Poppins } from "next/font/google";
 import "../globals.css"; 
 
 import React from "react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/ui/app-sidebar";
+
 import HeaderNav from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
+import SideBar from "@/components/common/SideBar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -48,16 +48,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={poppins.variable}>
-      <body className= "font-poppins">
+      <body className= "font-poppins bg-green-50">
         <div className="flex min-h-screen flex-col">
           <HeaderNav />
           <main className="flex-grow">{children}</main>
-            {/* <SidebarProvider>
-              <AppSidebar />
-                <SidebarTrigger className="" />
-              
-            </SidebarProvider> */}
-            <Footer />
+          {/* <SideBar /> */}
+          <Footer />
         </div>
       </body>
     </html>

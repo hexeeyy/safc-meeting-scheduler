@@ -1,32 +1,35 @@
-import React from 'react';
+type CalendarView = 'month' | 'week' | 'day' | 'year' | 'schedule'
 
-type ViewMode = 'day' | 'month' | 'year';
-
-interface DateDisplayProps {
-  view: ViewMode;
-  currentDate?: Date;
+interface DateViewProps {
+  activeView: CalendarView
 }
 
-export default function DateDisplay({ view, currentDate = new Date() }: DateDisplayProps) {
-  const formatOptions: Record<ViewMode, Intl.DateTimeFormatOptions> = {
-    day: {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    },
-    month: {
-      year: 'numeric',
-      month: 'long',
-    },
-    year: {
-      year: 'numeric',
-    },
-  };
+export default function DateView({ activeView }: DateViewProps) {
+  const now = new Date()
+
+  const format = (date: Date) =>
+    date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+
+  const getDateLabel = () => {
+    if (activeView === 'schedule') {
+      const end = new Date(now)
+      end.setFullYear(now.getFullYear() + 1)
+      return `${format(now)} – ${format(end)}`
+    }
+
+    const options: Intl.DateTimeFormatOptions =
+      activeView === 'day'
+        ? { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+        : activeView === 'week' || activeView === 'month'
+        ? { year: 'numeric', month: 'long' }
+        : { year: 'numeric' }
+
+    return now.toLocaleDateString(undefined, options)
+  }
 
   return (
-    <div className="flex-1 ml-2.5 text-gray-700 text-2xl font-medium">
-      {currentDate.toLocaleDateString(undefined, formatOptions[view])}
+    <div>
+      {getDateLabel()}
     </div>
-  );
+  )
 }

@@ -4,15 +4,18 @@ import { safcLogoG } from '@/assets'
 
 export default function Logo() {
   return (
-    <div> 
-    <Image 
+    <div className='flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-gray-200'> 
+    <Image  
         alt="South Asialink Finance Corporation Logo"
         src={safcLogoG}
-        width={60} 
-        height={60}
+        width={120} 
+        height={80}
         className="h-20 w-20 object-contain"
         priority
         />
+        <span
+        > Meeting Scheduler
+        </span>
     </div>
   )
 }
