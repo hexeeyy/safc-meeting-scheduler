@@ -7,7 +7,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="bg-green-800 text-white py-10 px-6">
+    <footer className="bg-green-800 text-white py-6 px-6 max-w-auto">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Company Info */}
         <div>
@@ -52,7 +52,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Line */}
-      <div className="mt-10 text-center text-sm text-gray-400 border-t border-gray-700 pt-4">
+      <div className="mt-8 text-center text-sm text-gray-400 border-t border-gray-700 pt-4">
         &copy; {new Date().getFullYear()} South Asialink Finance Corporation. All rights reserved.
       </div>
     </footer>

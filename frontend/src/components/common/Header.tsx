@@ -2,19 +2,17 @@
 
 import { useState } from 'react'
 import {
-  Bars3Icon,
-} from '@heroicons/react/24/outline'
-import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
   Cog6ToothIcon,
   ClipboardDocumentListIcon,
 } from '@heroicons/react/20/solid'
-import Image from 'next/image'
-import { safcLogoG } from '@/assets'
+
 import { Menu } from '@headlessui/react'
 import ButtonCircle from '../ui/button-circle';
 import ArrowButton from '../ui/arrow-button'
+import BarIcon from './BarIcon'
+import Logo from './Logo';
 
 // HeaderNav component
 // This component renders the header navigation bar with a logo, date display, and various action buttons.
@@ -25,39 +23,18 @@ export default function HeaderNav() {
 
 
   return (
-    <header className="h-18 bg-off-white" style={{ fontFamily: 'var(--font-poppins)' }}>
+    <header className="h-18 z-10 bg-off-white" style={{ fontFamily: 'var(--font-poppins)' }}>
       <nav className="flex items-center justify-between px-4 py-2 min-h-2 max-w-screen shadow-md">
         
         {/* LEFT SECTION */}
         <div className="flex items-center gap-4 flex-shrink-0">
-          <div className="relative group inline-block">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              className="flex items-center justify-center rounded-full p-2.5 text-black hover:bg-green-50 transition-colors duration-300 ease-in-out"
-            >
-              <span className="sr-only">Open sidebar</span>
-              <Bars3Icon className="size-6" />
-            </button>
-
-            {/* Tooltip below the button */}
-            <div className="absolute top-full left-2/3 -translate-x-1/2 mt-2
-                            hidden group-hover:block bg-gray-700 text-white text-[10px]
-                            px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg">
-              Search Button
-            </div>
-          </div>
-
-          <Image
-            alt="South Asialink Finance Corporation Logo"
-            src={safcLogoG} // correct path if in /public
-            width={60} // adjust as needed
-            height={60}
-            className="h-20 w-20 object-contain"
-            priority // optional: preload
-          />
-          <span className="font-medium text-black text-lg">Meeting Scheduler</span>
           
+          {/* Mobile Menu Toggle */}
+          <BarIcon></BarIcon>
+
+          {/* Logo */}
+          <Logo></Logo>
+
           {/* Today Button */}
           <ButtonCircle
           >
