@@ -4,7 +4,7 @@ import BigCalendar from "@/components/calendar/Calendar";
 export default function HomePage() {
   return (
     <main className="">
-      {/* <BigCalendar /> */}
+      <BigCalendar />
     </main>
   );
 }
