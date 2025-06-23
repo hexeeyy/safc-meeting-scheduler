@@ -6,7 +6,6 @@ import React from "react";
 
 import HeaderNav from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import SideBar from "@/components/common/SideBar";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -52,7 +51,6 @@ export default function RootLayout({
         <div className="flex min-h-screen flex-col">
           <HeaderNav />
           <main className="flex-grow">{children}</main>
-          {/* <SideBar /> */}
           <Footer />
         </div>
       </body>

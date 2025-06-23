@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 
-type CalendarView = 'month' | 'week' | 'day' | 'year' | 'schedule'
+type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'work_week'
 
 interface ViewProps {
   activeView: CalendarView
@@ -37,7 +37,7 @@ export default function View({ activeView, setActiveView }: ViewProps) {
 
       {dropdownOpen && (
         <div className="absolute mt-2 w-28 origin-top-right rounded-md text-white bg-green-800 shadow-lg ring-opacity-5 focus:outline-none z-50 p-1">
-          {(['month', 'week', 'day', 'year', 'schedule'] as const).map((view) => (
+          {(['month', 'week', 'day', 'agenda', 'work_week'] as const).map((view) => (
             <button
               key={view}
               onClick={() => {

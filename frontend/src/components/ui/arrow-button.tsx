@@ -1,8 +1,9 @@
-import React from 'react'
+// components/ArrowButton.tsx
+import React from 'react';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
-} from '@heroicons/react/20/solid'
+} from '@heroicons/react/20/solid';
 
 type ArrowButtonProps = React.HTMLAttributes<HTMLDivElement> & {
   className?: string;
@@ -15,18 +16,26 @@ export default function ArrowButton({
   ...props
 }: ArrowButtonProps) {
   return (
-    <div className={`flex items-center gap-0.5 ${className}`} {...props}>
+    <div className={`flex items-center gap-2 ${className}`} {...props}>
       <button
         aria-label="Previous month"
-        onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "PREV" }))}
-        className="p-2 rounded-full bg-green-50 hover:bg-white transition-colors duration-300 ease-in-out"
+        onClick={() =>
+          window.dispatchEvent(
+            new CustomEvent('calendar:navigate', { detail: 'PREV' })
+          )
+        }
+        className="p-2 rounded-full bg-green-50 hover:bg-white transition-colors duration-300"
       >
         <ChevronLeftIcon className="h-5 w-5 text-black" />
       </button>
       <button
         aria-label="Next month"
-        onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "NEXT" }))}
-        className="p-2 rounded-full bg-green-50 hover:bg-white transition-colors duration-300 ease-in-out"
+        onClick={() =>
+          window.dispatchEvent(
+            new CustomEvent('calendar:navigate', { detail: 'NEXT' })
+          )
+        }
+        className="p-2 rounded-full bg-green-50 hover:bg-white transition-colors duration-300"
       >
         <ChevronRightIcon className="h-5 w-5 text-black" />
       </button>
@@ -34,5 +43,3 @@ export default function ArrowButton({
     </div>
   );
 }
-
-

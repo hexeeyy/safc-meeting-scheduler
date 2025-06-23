@@ -1,0 +1,13 @@
+.rbc-btn-group{
+    display: flex;
+    justify-content: center;
+    margin: 5px;
+}
+
+.rbc-header {
+    background-color: #f0fdf4;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}

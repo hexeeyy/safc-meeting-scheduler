@@ -5,10 +5,23 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
 };
 
-export default function ButtonCircle({ children, className = '', ...props }: ButtonProps) {
+export default function ButtonCircle({
+  children,
+  className = '',
+  onClick,
+  ...props
+}: ButtonProps) {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Dispatch custom event
+    window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "TODAY" }));
+
+    // Call external onClick if provided
+    if (onClick) onClick(e);
+  };
+
   return (
     <button
-      onClick={() => window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "TODAY" }))}
+      onClick={handleClick}
       className={`text-sm px-4 py-2 ml-7 rounded-[2rem] border border-gray-600 bg-green-50 hover:bg-white transition-colors duration-300 ease-in-out ${className}`}
       {...props}
     >
