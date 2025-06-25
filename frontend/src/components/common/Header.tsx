@@ -2,40 +2,31 @@
 
 import React from 'react';
 import ButtonCircle from '../ui/button-circle';
-import ArrowButton from '../ui/arrow-button'
-import BarIcon from './BarIcon'
+import ArrowButton from '../ui/arrow-button';
 import Logo from './Logo';
 import ActionIcons from './ActionIcons';
 import CalendarHeader from '../calendar/CalendarHeader';
 
 export default function HeaderNav() {
-
   return (
-    <header className="h-15 z-10" style={{ fontFamily: 'var(--font-poppins)' }}>
-      <nav className="flex items-center justify-between px-2 min-h-1 max-w-screen">
-        
+    <header
+      className="relative top-0 z-20 w-full backdrop-blur-md bg-green-50 transition-all duration-300"
+      style={{ fontFamily: 'var(--font-poppins)' }}
+    >
+      <nav className="flex items-center justify-between px-6 py-3 max-w-screen">
         {/* LEFT SECTION */}
         <div className="flex items-center gap-4 flex-shrink-0">
-          <BarIcon></BarIcon>
-          <Logo></Logo>
-          <ButtonCircle
-          >
-            Today
-          </ButtonCircle>
-
-          {/* Arrow Buttons */}
-          <div className="flex items-center">
-            <ArrowButton> </ArrowButton>
-          </div>
+          <Logo />
+          <ButtonCircle>Today</ButtonCircle>
+          <ArrowButton />
         </div>
+
         {/* RIGHT SECTION */}
-        <div className="flex items-center gap-4 flex-shrink-0">
-          {/* DATE DISPLAY */}
-          <CalendarHeader></CalendarHeader>
-          {/* Action Icons */}
-          <ActionIcons></ActionIcons>
+        <div className="flex items-center gap-6 flex-shrink-0">
+          <CalendarHeader />
+          <ActionIcons />
         </div>
       </nav>
     </header>
-  )
+  );
 }

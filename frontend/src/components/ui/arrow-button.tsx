@@ -1,4 +1,3 @@
-// components/ArrowButton.tsx
 import React from 'react';
 import {
   ChevronLeftIcon,
@@ -16,30 +15,34 @@ export default function ArrowButton({
   ...props
 }: ArrowButtonProps) {
   return (
-    <div className={`flex items-center gap-2 ${className}`} {...props}>
-      <button
-        aria-label="Previous month"
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent('calendar:navigate', { detail: 'PREV' })
-          )
-        }
-        className="p-2 rounded-full bg-green-50 hover:bg-white transition-colors duration-300"
-      >
-        <ChevronLeftIcon className="h-5 w-5 text-black" />
-      </button>
-      <button
-        aria-label="Next month"
-        onClick={() =>
-          window.dispatchEvent(
-            new CustomEvent('calendar:navigate', { detail: 'NEXT' })
-          )
-        }
-        className="p-2 rounded-full bg-green-50 hover:bg-white transition-colors duration-300"
-      >
-        <ChevronRightIcon className="h-5 w-5 text-black" />
-      </button>
+    <div
+      className={`flex items-center gap-3 transition-all duration-500 ease-in-out ${className}`}
+      {...props}
+    >
+      <AnimatedNavButton direction="PREV" Icon={ChevronLeftIcon} />
+      <AnimatedNavButton direction="NEXT" Icon={ChevronRightIcon} />
       {children}
     </div>
+  );
+}
+
+type AnimatedNavButtonProps = {
+  direction: 'PREV' | 'NEXT';
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+};
+
+function AnimatedNavButton({ direction, Icon }: AnimatedNavButtonProps) {
+  const handleClick = () => {
+    window.dispatchEvent(new CustomEvent('calendar:navigate', { detail: direction }));
+  };
+
+  return (
+    <button
+      aria-label={`${direction === 'PREV' ? 'Previous' : 'Next'} month`}
+      onClick={handleClick}
+      className="group p-2 rounded-full bg-white hover:bg-green-50 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+    >
+      <Icon className="h-5 w-5 text-green-800 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+    </button>
   );
 }

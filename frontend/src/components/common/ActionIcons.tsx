@@ -1,50 +1,50 @@
+'use client';
+
 import { 
-    ClipboardDocumentListIcon, 
-    Cog6ToothIcon, 
-    MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import React from 'react'
+  ClipboardDocumentListIcon, 
+  Cog6ToothIcon, 
+  MagnifyingGlassIcon 
+} from '@heroicons/react/20/solid';
+import React from 'react';
 
 export default function ActionIcons() {
   return (
-    <div  className="flex items-center gap-2">
-        <div className="relative group inline-block">
-            <button
-              className="p-2 bg-green-50 hover:bg-white transition-colors duration-300 ease-in-out rounded-full"
-            >
-            <MagnifyingGlassIcon className="h-5 w-5 text-gray-700" />
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2
-                            hidden group-hover:block bg-gray-700 text-white text-[10px]
-                            px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg">
-              Search Button
-            </div>
-          </div>
-
-          <div className="relative group inline-block">
-            <button
-              className="p-2 bg-green-50 hover:bg-white transition-colors duration-300 ease-in-out rounded-full"
-            >
-            <ClipboardDocumentListIcon className="h-5 w-5 text-gray-700" />
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2
-                            hidden group-hover:block bg-gray-700 text-white text-[10px]
-                            px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg">
-              Meeting List
-            </div>
-          </div>
-          
-          <div className="relative group inline-block">
-            <button
-              className="p-2 bg-green-50 hover:bg-white transition-colors duration-300 ease-in-out rounded-full"
-            >
-            <Cog6ToothIcon className="h-5 w-5 text-gray-700" />
-            </button>
-            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2
-                            hidden group-hover:block bg-gray-700 text-white text-[10px]
-                            px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg">
-              Settings
-            </div>
+    <div className="flex items-center gap-2">
+      <div className="relative group inline-block">
+        <button
+          aria-label="Search"
+          className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+        >
+          <MagnifyingGlassIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+        </button>
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-green-800 dark:bg-gray-900 text-green-100 dark:text-green-200 text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
+          Search Button
         </div>
+      </div>
+
+      <div className="relative group inline-block">
+        <button
+          aria-label="Meeting List"
+          className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+        >
+          <ClipboardDocumentListIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+        </button>
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-green-800 dark:bg-gray-900 text-green-100 dark:text-green-200 text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
+          Meeting List
+        </div>
+      </div>
+
+      <div className="relative group inline-block">
+        <button
+          aria-label="Settings"
+          className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+        >
+          <Cog6ToothIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+        </button>
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-green-800 dark:bg-gray-900 text-green-100 dark:text-green-200 text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
+          Settings
+        </div>
+      </div>
     </div>
-  )
+  );
 }

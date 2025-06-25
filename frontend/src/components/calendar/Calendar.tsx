@@ -69,7 +69,6 @@ export default function BigCalendar() {
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
   const [currentView, setCurrentView] = useState<View>('month');
-
   const [modalOpen, setModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [pendingSlot, setPendingSlot] = useState<SlotInfo | null>(null);
@@ -131,11 +130,15 @@ export default function BigCalendar() {
   };
 
   const eventPropGetter = (event: CalendarEvent) => ({
+    className: 'transform transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg',
     style: {
       backgroundColor: event.color || '#3174ad',
       color: 'white',
-      borderRadius: '3px',
-      padding: '4px',
+      borderRadius: '6px',
+      padding: '6px',
+      border: 'none',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+      cursor: 'pointer',
     },
   });
 
@@ -145,7 +148,7 @@ export default function BigCalendar() {
       setPendingSlot(input);
       setModalOpen(true);
     } else {
-      setEditingEvent(input);
+      setEditingEvent(input as CalendarEvent);
       setPendingSlot(null);
       setModalOpen(true);
     }
@@ -170,11 +173,12 @@ export default function BigCalendar() {
 
     setEditingEvent(null);
     setPendingSlot(null);
+    setModalOpen(false);
   };
 
   return (
-    <div className="rounded-2xl my-4 mx-2">
-      <div className="h-[840px] max-w-screen mx-auto">
+    <div className="relative mx-4 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl overflow-hidden">
+      <div className="h-[860px] max-w-screen mx-auto">
         <DnDCalendar
           localizer={localizer}
           events={events}
@@ -199,16 +203,28 @@ export default function BigCalendar() {
               setEvents(events.filter((e) => e !== event));
             }
           }}
-          className="rounded-2xl p-4 bg-white"
+          className="rounded-xl bg-white/80 backdrop-blur-sm transition-all duration-500 ease-in-out"
         />
       </div>
-      <CalendarModal
-        isOpen={modalOpen}
-        initialTitle={editingEvent?.title}
-        initialColor={editingEvent?.color}
-        onClose={() => setModalOpen(false)}
-        onSave={handleSaveEvent}
-      />
+      <div
+        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ease-in-out ${
+          modalOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <div
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out ${
+            modalOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+          }`}
+        >
+          <CalendarModal
+            isOpen={modalOpen}
+            initialTitle={editingEvent?.title}
+            initialColor={editingEvent?.color}
+            onClose={() => setModalOpen(false)}
+            onSave={handleSaveEvent}
+          />
+        </div>
+      </div>
     </div>
   );
 }
