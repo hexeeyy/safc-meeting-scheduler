@@ -12,7 +12,7 @@ export default function BarIcon() {
     <button
         type="button"
         onClick={() => setMobileMenuOpen(true)}
-        className="flex items-center justify-center rounded-full p-2.5 text-black hover:bg-green-50 transition-colors duration-300 ease-in-out"
+        className="flex items-center justify-center rounded-full p-2.5 text-black hover:bg-white transition-colors duration-300 ease-in-out"
     >
         <span className="sr-only">Open sidebar</span>
         <Bars3Icon className="size-6" />

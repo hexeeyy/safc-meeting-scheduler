@@ -2,20 +2,18 @@ type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'work_week';
 
 interface DateViewProps {
   activeView: CalendarView;
+  date: Date;
 }
 
-export default function DateView({ activeView }: DateViewProps) {
-  const now = new Date();
-
+export default function DateView({ activeView, date }: DateViewProps) {
   const formatDate = (date: Date, options: Intl.DateTimeFormatOptions = {}) =>
     date.toLocaleDateString(undefined, options);
 
   const getDateLabel = (): string => {
     switch (activeView) {
       case 'agenda': {
-        // For agenda view, we can show a month of agenda satring from the current date today sating june 23
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of the month
+        const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
         return `${formatDate(startOfMonth, { month: 'long', day: 'numeric' })} – ${formatDate(endOfMonth, {
           month: 'long',
           day: 'numeric',
@@ -23,29 +21,42 @@ export default function DateView({ activeView }: DateViewProps) {
       }
 
       case 'day':
-        return formatDate(now, {
+        return formatDate(date, {
           weekday: 'long',
           year: 'numeric',
           month: 'long',
           day: 'numeric',
         });
-      case 'week':
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - now.getDay()); // Adjust to start of week (Sunday)
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6); // End of week (Saturday)
+
+      case 'week': {
+        const startOfWeek = new Date(date);
+        const endOfWeek = new Date(date);
+        endOfWeek.setDate(startOfWeek.getDate() + 7 - startOfWeek.getDay() - 1); // Adjust to end of week (Saturday)
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
         return `${formatDate(startOfWeek, { month: 'long', day: 'numeric' })} – ${formatDate(endOfWeek, {
           month: 'long',
           day: 'numeric',
         })}`;
+      }
+
+      case 'work_week': {
+        const day = date.getDay(); // Sunday = 0
+        const diffToMonday = (day + 6) % 7;
+        const monday = new Date(date);
+        monday.setDate(date.getDate() - diffToMonday);
+        const friday = new Date(monday);
+        friday.setDate(monday.getDate() + 4);
+        return `${formatDate(monday, { month: 'long', day: 'numeric' })} – ${formatDate(friday, {
+          month: 'long',
+          day: 'numeric',
+        })}`;
+      }
+
       case 'month':
-        return formatDate(now, {
+        return formatDate(date, {
           year: 'numeric',
           month: 'long',
         });
-
-      case 'work_week':
-        return now.getFullYear().toString();
 
       default:
         return '';
@@ -54,3 +65,5 @@ export default function DateView({ activeView }: DateViewProps) {
 
   return <div>{getDateLabel()}</div>;
 }
+
+

@@ -12,10 +12,10 @@ export default function ButtonCircle({
   ...props
 }: ButtonProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // Dispatch custom event
+    // Dispatch custom navigation event
     window.dispatchEvent(new CustomEvent("calendar:navigate", { detail: "TODAY" }));
 
-    // Call external onClick if provided
+    // Call external handler if provided
     if (onClick) onClick(e);
   };
 
