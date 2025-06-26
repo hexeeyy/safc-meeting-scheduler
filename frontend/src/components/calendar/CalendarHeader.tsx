@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import View from '../common/View'
 import DateView from './DateView'
-import ButtonCircle from '../ui/button-circle';
 
 // Declare allowed calendar views
 type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'work_week';

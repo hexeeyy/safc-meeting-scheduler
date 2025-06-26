@@ -177,7 +177,7 @@ export default function BigCalendar() {
   };
 
   return (
-    <div className="relative mx-4 bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl overflow-hidden">
+    <div className="relative mx-4 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 overflow-hidden">
       <div className="h-[860px] max-w-screen mx-auto">
         <DnDCalendar
           localizer={localizer}
@@ -203,7 +203,7 @@ export default function BigCalendar() {
               setEvents(events.filter((e) => e !== event));
             }
           }}
-          className="rounded-xl bg-white/80 backdrop-blur-sm transition-all duration-500 ease-in-out"
+          className="bg-white backdrop-blur-sm transition-all duration-500 ease-in-out"
         />
       </div>
       <div

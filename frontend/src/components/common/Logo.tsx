@@ -19,7 +19,7 @@ export default function Logo() {
             inset -4px -4px 8px rgba(255, 255, 255, 0.2);
         }
       `}</style>
-      <div className="flex items-center gap-3 hover:bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-800 dark:to-gray-900 px-4 py-2 rounded-lg page-turn-effect">
+      <div className="flex items-center gap-3 hover:bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-800 dark:to-gray-900 px-4 py-2 rounded-lg ">
         <div className="relative group">
           <Image
             alt="South Asialink Finance Corporation Logo"
