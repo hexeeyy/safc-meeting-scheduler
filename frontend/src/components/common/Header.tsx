@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import ButtonCircle from '../ui/utton-circle';
-import ArrowButton from '../ui/rrow-button';
+import ButtonCircle from '../ui/button-circle';
+import ArrowButton from '../ui/arrow-button';
 import Logo from './Logo';
 import ActionIcons from './ActionIcons';
 import CalendarHeader from '../calendar/CalendarHeader';

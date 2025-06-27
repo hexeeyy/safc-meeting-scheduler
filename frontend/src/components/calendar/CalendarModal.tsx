@@ -5,10 +5,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/ialog';
-import { Input } from '@/components/ui/nput';
-import { Button } from '@/components/ui/utton';
-import { Label } from '@/components/ui/abel';
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { HexColorPicker } from 'react-colorful';
 import { useEffect, useState } from 'react';
 
