@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../globals.css"; 
-
 import React from "react";
-
 import HeaderNav from "@/components/common/Header";
-// import Footer from "@/components/common/Footer";
+import Footer from "@/components/common/Footer";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -13,7 +11,6 @@ const poppins = Poppins({
   variable: "--font-poppins",
   display: "swap",
 });
-
 
 export const metadata: Metadata = {
   title: {
@@ -51,10 +48,9 @@ export default function RootLayout({
         <div className="flex min-h-screen flex-col">
           <HeaderNav />
           <main className="flex-grow">{children}</main>
-          {/* <Footer /> */}
+          <Footer />
         </div>
       </body>
     </html>
-    
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Calendar,
   dateFnsLocalizer,
@@ -15,12 +14,10 @@ import withDragAndDrop, {
 } from 'react-big-calendar/lib/addons/dragAndDrop';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
-
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import '../calendar/calendar.css';
-
-import CalendarModal from '../common/CalendarModal';
+import CalendarModal from '../calendar/CalendarModal';
 
 const localizer = dateFnsLocalizer({
   format,
@@ -59,13 +56,9 @@ const initialEvents: CalendarEvent[] = [
 ];
 
 const allowedViews: View[] = ['month', 'week', 'day', 'agenda', 'work_week'];
-
 const DnDCalendar = withDragAndDrop<CalendarEvent, object>(Calendar);
 
 export default function BigCalendar() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const [date, setDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
   const [currentView, setCurrentView] = useState<View>('month');
@@ -73,22 +66,20 @@ export default function BigCalendar() {
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [pendingSlot, setPendingSlot] = useState<SlotInfo | null>(null);
 
-  useEffect(() => {
-    const viewFromUrl = searchParams.get('view');
-    if (viewFromUrl && allowedViews.includes(viewFromUrl as View)) {
-      setCurrentView(viewFromUrl as View);
-    }
-  }, [searchParams]);
-
+  // Handle navigation actions (PREV, NEXT, TODAY)
   const handleNavigate = useCallback(
     (action: NavigateAction) => {
       let newDate = new Date(date);
       switch (action) {
         case 'PREV':
-          newDate.setMonth(newDate.getMonth() - 1);
+          if (['day'].includes(currentView)) newDate.setDate(newDate.getDate() - 1);
+          else if (['week', 'work_week'].includes(currentView)) newDate.setDate(newDate.getDate() - 7);
+          else newDate.setMonth(newDate.getMonth() - 1);
           break;
         case 'NEXT':
-          newDate.setMonth(newDate.getMonth() + 1);
+          if (['day'].includes(currentView)) newDate.setDate(newDate.getDate() + 1);
+          else if (['week', 'work_week'].includes(currentView)) newDate.setDate(newDate.getDate() + 7);
+          else newDate.setMonth(newDate.getMonth() + 1);
           break;
         case 'TODAY':
           newDate = new Date();
@@ -96,25 +87,41 @@ export default function BigCalendar() {
       }
       setDate(newDate);
     },
-    [date]
+    [date, currentView]
   );
 
+  // Listen for navigation events from CalendarHeader
   useEffect(() => {
-    const listener = (e: Event) => {
+    const navListener = (e: Event) => {
       const customEvent = e as CustomEvent<NavigateAction>;
       if (['PREV', 'NEXT', 'TODAY'].includes(customEvent.detail)) {
         handleNavigate(customEvent.detail);
       }
     };
-    window.addEventListener('calendar:navigate', listener);
-    return () => window.removeEventListener('calendar:navigate', listener);
+    window.addEventListener('calendar:navigate', navListener);
+    return () => window.removeEventListener('calendar:navigate', navListener);
   }, [handleNavigate]);
 
+  // 🔁 Listen for view change from CalendarHeader
+  useEffect(() => {
+    const viewListener = (e: Event) => {
+      const customEvent = e as CustomEvent<View>;
+      if (allowedViews.includes(customEvent.detail)) {
+        setCurrentView(customEvent.detail);
+      }
+    };
+    window.addEventListener('calendar:viewChange', viewListener);
+    return () => window.removeEventListener('calendar:viewChange', viewListener);
+  }, []);
+
+  // Notify CalendarHeader if internal view changes (e.g. by user dragging)
   const handleViewChange = (view: View) => {
-    setCurrentView(view);
-    const params = new URLSearchParams(Array.from(searchParams.entries()));
-    params.set('view', view);
-    router.push(`?${params.toString()}`);
+    if (view !== currentView) {
+      setCurrentView(view);
+
+      const event = new CustomEvent('calendar:externalViewChange', { detail: view });
+      window.dispatchEvent(event);
+    }
   };
 
   const moveEvent: withDragAndDropProps<CalendarEvent>['onEventDrop'] = ({
@@ -157,9 +164,7 @@ export default function BigCalendar() {
   const handleSaveEvent = (title: string, color: string) => {
     if (editingEvent) {
       setEvents((prev) =>
-        prev.map((evt) =>
-          evt === editingEvent ? { ...evt, title, color } : evt
-        )
+        prev.map((evt) => (evt === editingEvent ? { ...evt, title, color } : evt))
       );
     } else if (pendingSlot) {
       const newEvent: CalendarEvent = {
@@ -206,6 +211,8 @@ export default function BigCalendar() {
           className="bg-white backdrop-blur-sm transition-all duration-500 ease-in-out"
         />
       </div>
+
+      {/* Modal for Event Creation/Editing */}
       <div
         className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ease-in-out ${
           modalOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
