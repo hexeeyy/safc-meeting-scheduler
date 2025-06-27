@@ -66,7 +66,6 @@ export default function BigCalendar() {
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [pendingSlot, setPendingSlot] = useState<SlotInfo | null>(null);
 
-  // Handle navigation actions (PREV, NEXT, TODAY)
   const handleNavigate = useCallback(
     (action: NavigateAction) => {
       let newDate = new Date(date);
@@ -90,7 +89,6 @@ export default function BigCalendar() {
     [date, currentView]
   );
 
-  // Listen for navigation events from CalendarHeader
   useEffect(() => {
     const navListener = (e: Event) => {
       const customEvent = e as CustomEvent<NavigateAction>;
@@ -102,7 +100,6 @@ export default function BigCalendar() {
     return () => window.removeEventListener('calendar:navigate', navListener);
   }, [handleNavigate]);
 
-  // 🔁 Listen for view change from CalendarHeader
   useEffect(() => {
     const viewListener = (e: Event) => {
       const customEvent = e as CustomEvent<View>;
@@ -114,11 +111,9 @@ export default function BigCalendar() {
     return () => window.removeEventListener('calendar:viewChange', viewListener);
   }, []);
 
-  // Notify CalendarHeader if internal view changes (e.g. by user dragging)
   const handleViewChange = (view: View) => {
     if (view !== currentView) {
       setCurrentView(view);
-
       const event = new CustomEvent('calendar:externalViewChange', { detail: view });
       window.dispatchEvent(event);
     }
@@ -161,19 +156,39 @@ export default function BigCalendar() {
     }
   };
 
-  const handleSaveEvent = (title: string, color: string) => {
+  const handleSaveEvent = (
+    title: string,
+    color: string,
+    startTime: string,
+    endTime: string
+  ) => {
+    const parseTime = (timeStr: string, baseDate: Date) => {
+      const [hours, minutes] = timeStr.split(':').map(Number);
+      const date = new Date(baseDate);
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      date.setSeconds(0);
+      return date;
+    };
+
     if (editingEvent) {
-      setEvents((prev) =>
-        prev.map((evt) => (evt === editingEvent ? { ...evt, title, color } : evt))
-      );
+      const updatedEvent = {
+        ...editingEvent,
+        title,
+        color,
+        start: parseTime(startTime, editingEvent.start),
+        end: parseTime(endTime, editingEvent.start),
+      };
+      setEvents((prev) => prev.map((evt) => (evt === editingEvent ? updatedEvent : evt)));
     } else if (pendingSlot) {
+      const baseDate = pendingSlot.start;
       const newEvent: CalendarEvent = {
         title,
-        start: pendingSlot.start,
-        end: pendingSlot.end,
         color,
+        start: parseTime(startTime, baseDate),
+        end: parseTime(endTime, baseDate),
       };
-      setEvents([...events, newEvent]);
+      setEvents((prev) => [...prev, newEvent]);
     }
 
     setEditingEvent(null);
@@ -182,8 +197,8 @@ export default function BigCalendar() {
   };
 
   return (
-    <div className="relative mx-4 bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 overflow-hidden">
-      <div className="h-[860px] max-w-screen mx-auto">
+    <div className="">
+      <div className="h-[calc(100vh-8rem)] w-full max-w-7xl mx-auto">
         <DnDCalendar
           localizer={localizer}
           events={events}
@@ -227,6 +242,20 @@ export default function BigCalendar() {
             isOpen={modalOpen}
             initialTitle={editingEvent?.title}
             initialColor={editingEvent?.color}
+            initialStartTime={
+              editingEvent
+                ? editingEvent.start.toTimeString().slice(0, 5)
+                : pendingSlot
+                ? new Date(pendingSlot.start).toTimeString().slice(0, 5)
+                : ''
+            }
+            initialEndTime={
+              editingEvent
+                ? editingEvent.end.toTimeString().slice(0, 5)
+                : pendingSlot
+                ? new Date(pendingSlot.end).toTimeString().slice(0, 5)
+                : ''
+            }
             onClose={() => setModalOpen(false)}
             onSave={handleSaveEvent}
           />

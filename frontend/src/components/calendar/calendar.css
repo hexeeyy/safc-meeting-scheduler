@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+
 .rbc-btn-group{
     display: flex;
     justify-content: center;
@@ -12,3 +15,129 @@
 
 }
 
+.rbc-calendar {
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.055);
+  box-sizing: border-box;
+  height: 100%;
+  background-color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 4px;
+}
+
+.rbc-header {
+  text-align: center;
+  font-weight: 600;
+  padding: 10px 0;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rbc-date-cell.rbc-now {
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 2px;
+}
+
+.rbc-date-cell.rbc-now .rbc-button-link {
+  background-color: #10b981;
+  color: white;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+
+.rbc-event {
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  font-weight: 500;
+  background-color: #3b82f6;
+  color: white;
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+}
+
+.rbc-event:hover {
+  transform: scale(1.03);
+}
+
+.rbc-event::before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  width: 4px;
+  background-color: inherit;
+  margin-right: 6px;
+  border-radius: 4px 0 0 4px;
+}
+
+.rbc-event .rbc-event-content{
+    height: 20px;
+    font-size: small;
+}
+
+.rbc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #ecfdf5;
+  border-bottom: 1px solid #d1fae5;
+}
+
+.rbc-toolbar button {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.rbc-toolbar button:hover {
+  background-color: #059669;
+}
+
+.rbc-toolbar .rbc-toolbar-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #065f46;
+}
+
+@media (max-width: 768px) {
+  .rbc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.rbc-time-view, .rbc-agenda-view, .rbc-month-view {
+  border: none;
+  height: 100%;
+  background-color: #ffffff;
+}
+
+.rbc-show-more {
+  color: #065f46;
+  font-weight: 600;
+  background-color: #d1fae5;
+  border-radius: 6px;
+  padding: 2px 4px;
+  cursor: pointer;
+}
+
+.rbc-time-header, .rbc-time-content, .rbc-agenda-view table {
+  border-color: #d1d5db;
+}
