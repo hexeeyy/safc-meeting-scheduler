@@ -28,30 +28,38 @@ const localizer = dateFnsLocalizer({
 });
 
 interface CalendarEvent extends RBCEvent {
+  id: string;
   title: string;
   start: Date;
   end: Date;
   color?: string;
+  department: string;
 }
 
 const initialEvents: CalendarEvent[] = [
   {
+    id: '1',
     title: 'Team Meeting',
     start: new Date(2025, 5, 20, 10, 0),
     end: new Date(2025, 5, 20, 11, 0),
     color: '#10B981',
+    department: 'Risk Management',
   },
   {
+    id: '2',
     title: 'Doctor Appointment',
     start: new Date(2025, 5, 22, 14, 0),
     end: new Date(2025, 5, 22, 15, 0),
     color: '#3B82F6',
+    department: 'Customer Service',
   },
   {
+    id: '3',
     title: 'Project Deadline',
     start: new Date(2025, 5, 25, 9, 0),
     end: new Date(2025, 5, 25, 10, 0),
     color: '#EF4444',
+    department: 'Underwriting',
   },
 ];
 
@@ -128,7 +136,7 @@ export default function BigCalendar() {
   }) => {
     const toDate = (d: Date | string) => (d instanceof Date ? d : new Date(d));
     const updatedEvents = events.map((evt) =>
-      evt === event ? { ...evt, start: toDate(start), end: toDate(end) } : evt
+      evt.id === event.id ? { ...evt, start: toDate(start), end: toDate(end) } : evt
     );
     setEvents(updatedEvents);
   };
@@ -143,7 +151,9 @@ export default function BigCalendar() {
       border: 'none',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       cursor: 'pointer',
+      fontSize: '14px',
     },
+    title: `${event.title}<br /><strong style="font-size: 0.8em;">${event.department}</strong>`,
   });
 
   const handleDoubleClickEvent = (input: CalendarEvent | SlotInfo) => {
@@ -161,6 +171,7 @@ export default function BigCalendar() {
   const handleSaveEvent = (
     title: string,
     color: string,
+    department: string,
     startTime: string,
     endTime: string
   ) => {
@@ -178,15 +189,18 @@ export default function BigCalendar() {
         ...editingEvent,
         title,
         color,
+        department,
         start: parseTime(startTime, editingEvent.start),
         end: parseTime(endTime, editingEvent.start),
       };
-      setEvents((prev) => prev.map((evt) => (evt === editingEvent ? updatedEvent : evt)));
+      setEvents((prev) => prev.map((evt) => (evt.id === editingEvent.id ? updatedEvent : evt)));
     } else if (pendingSlot) {
       const baseDate = pendingSlot.start;
       const newEvent: CalendarEvent = {
+        id: crypto.randomUUID(),
         title,
         color,
+        department,
         start: parseTime(startTime, baseDate),
         end: parseTime(endTime, baseDate),
       };
@@ -196,6 +210,14 @@ export default function BigCalendar() {
     setEditingEvent(null);
     setPendingSlot(null);
     setModalOpen(false);
+  };
+
+  const handleDeleteEvent = () => {
+    if (editingEvent) {
+      setEvents((prev) => prev.filter((evt) => evt.id !== editingEvent.id));
+      setEditingEvent(null);
+      setModalOpen(false);
+    }
   };
 
   return (
@@ -218,13 +240,7 @@ export default function BigCalendar() {
           views={allowedViews}
           selectable="ignoreEvents"
           onSelectSlot={handleDoubleClickEvent}
-          onDoubleClickEvent={handleDoubleClickEvent}
-          onSelectEvent={(event) => {
-            const confirmDelete = window.confirm(`Delete event "${event.title}"?`);
-            if (confirmDelete) {
-              setEvents(events.filter((e) => e !== event));
-            }
-          }}
+          onSelectEvent={handleDoubleClickEvent}
           className="bg-white backdrop-blur-sm transition-all duration-500 ease-in-out"
         />
       </div>
@@ -241,8 +257,10 @@ export default function BigCalendar() {
         >
           <CalendarModal
             isOpen={modalOpen}
+            eventId={editingEvent?.id}
             initialTitle={editingEvent?.title}
             initialColor={editingEvent?.color}
+            initialDepartment={editingEvent?.department}
             initialStartTime={
               editingEvent
                 ? editingEvent.start.toTimeString().slice(0, 5)
@@ -259,6 +277,7 @@ export default function BigCalendar() {
             }
             onClose={() => setModalOpen(false)}
             onSave={handleSaveEvent}
+            onDelete={editingEvent ? handleDeleteEvent : undefined}
           />
         </div>
       </div>
