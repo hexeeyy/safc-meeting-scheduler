@@ -85,6 +85,8 @@ export default function BigCalendar() {
           break;
       }
       setDate(newDate);
+      const event = new CustomEvent('calendar:navigateDate', { detail: newDate });
+      window.dispatchEvent(event);
     },
     [date, currentView]
   );
@@ -197,7 +199,7 @@ export default function BigCalendar() {
   };
 
   return (
-    <div className="">
+    <div className="p-4 pt-0">
       <div className="h-[calc(100vh-8rem)] w-full max-w-7xl mx-auto">
         <DnDCalendar
           localizer={localizer}
@@ -227,7 +229,6 @@ export default function BigCalendar() {
         />
       </div>
 
-      {/* Modal for Event Creation/Editing */}
       <div
         className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ease-in-out ${
           modalOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import View from '../common/View';
 import DateView from './DateView';
 
@@ -9,18 +9,16 @@ const allowedViews: CalendarView[] = ['month', 'week', 'day', 'agenda', 'work_we
 
 export default function CalendarHeader() {
   const [activeView, setActiveView] = useState<CalendarView>('month');
-  const [date] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(new Date());
 
   const handleSetView = (view: CalendarView) => {
     if (view === activeView) return;
     setActiveView(view);
 
-    // 🔁 Broadcast to BigCalendar
     const event = new CustomEvent('calendar:viewChange', { detail: view });
     window.dispatchEvent(event);
   };
 
-  // Optional: Sync external view changes back to header
   useEffect(() => {
     const onViewChange = (e: Event) => {
       const custom = e as CustomEvent<CalendarView>;
@@ -30,6 +28,17 @@ export default function CalendarHeader() {
     };
     window.addEventListener('calendar:externalViewChange', onViewChange);
     return () => window.removeEventListener('calendar:externalViewChange', onViewChange);
+  }, []);
+
+  useEffect(() => {
+    const onNavigate = (e: Event) => {
+      const custom = e as CustomEvent<Date>;
+      if (custom.detail instanceof Date && !isNaN(custom.detail.getTime())) {
+        setDate(new Date(custom.detail));
+      }
+    };
+    window.addEventListener('calendar:navigateDate', onNavigate);
+    return () => window.removeEventListener('calendar:navigateDate', onNavigate);
   }, []);
 
   return (

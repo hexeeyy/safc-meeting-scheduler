@@ -141,3 +141,10 @@
 .rbc-time-header, .rbc-time-content, .rbc-agenda-view table {
   border-color: #d1d5db;
 }
+
+.rbc-time-slot {
+  align-items: center;     
+  justify-content: center;
+  padding-left: 10px;
+  padding-right: 5px;
+}

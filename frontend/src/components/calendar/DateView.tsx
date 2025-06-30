@@ -65,5 +65,3 @@ export default function DateView({ activeView, date }: DateViewProps) {
 
   return <div>{getDateLabel()}</div>;
 }
-
-

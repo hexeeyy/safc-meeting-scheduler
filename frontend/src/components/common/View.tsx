@@ -41,7 +41,7 @@ export default function View({ activeView, setActiveView }: ViewProps) {
       <div className="relative inline-block text-left" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="inline-flex items-center gap-1 rounded-md border text-sm font-medium border-green-200 dark:border-green-700 bg-white dark:bg-gray-800 px-4 py-2 capitalize text-green-800 dark:text-green-200 hover:bg-green-50 dark:hover:bg-green-600 transition-all duration-200 ease-in-out"
+          className="inline-flex items-center gap-1 rounded-full border text-sm font-medium border-green-200 dark:border-green-700 bg-white dark:bg-gray-800 px-4 py-2 capitalize text-green-800 dark:text-green-200 hover:bg-green-50 dark:hover:bg-green-600 transition-all duration-200 ease-in-out"
         >
           {activeView}
           <ChevronDown className="h-4 w-4 transform transition-transform duration-300 rotate-0 hover:rotate-90" aria-hidden="true" />

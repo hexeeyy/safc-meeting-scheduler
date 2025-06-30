@@ -10,7 +10,7 @@ import CalendarHeader from '../calendar/CalendarHeader';
 export default function HeaderNav() {
   return (
     <header
-      className="relative top-0 z-20 w-full backdrop-blur-md bg-green-50 transition-all duration-300"
+      className="relative z-1 top-0 w-full backdrop-blur-md bg-green-50 transition-all duration-300"
       style={{ fontFamily: 'var(--font-poppins)' }}
     >
       <nav className="flex items-center justify-between px-6 py-3 max-w-screen">

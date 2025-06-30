@@ -9,7 +9,7 @@ export default function Logo() {
     <>
       <style jsx global>{`
       `}</style>
-      <div className="flex items-center gap-3 px-4 py-2">
+      <div className="flex items-center gap-3 px-4">
         <div className="relative group">
           <Image
             alt="South Asialink Finance Corporation Logo"
