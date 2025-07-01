@@ -22,7 +22,7 @@ export default function Logo() {
           <div className="absolute inset-0 bg-teal-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
         <span className="text-xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
-          Meeting Scheduler
+          Conference Room
         </span>
         <div className="w-12 h-1 bg-gradient-to-r from-green-400 to-teal-500 rounded-full mt-1"></div>
       </div>

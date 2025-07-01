@@ -16,7 +16,7 @@ import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
-import '../calendar/calendar.css';
+import './calendar.css';
 import CalendarModal from '../calendar/CalendarModal';
 
 const localizer = dateFnsLocalizer({
@@ -73,6 +73,8 @@ export default function BigCalendar() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [pendingSlot, setPendingSlot] = useState<SlotInfo | null>(null);
+  const [tooltipEvent, setTooltipEvent] = useState<CalendarEvent | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
 
   const handleNavigate = useCallback(
     (action: NavigateAction) => {
@@ -148,13 +150,26 @@ export default function BigCalendar() {
       color: 'white',
       borderRadius: '6px',
       padding: '6px',
-      border: 'none',
+      border: 'Removal',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       cursor: 'pointer',
       fontSize: '14px',
     },
-    title: `${event.title}<br /><strong style="font-size: 0.8em;">${event.department}</strong>`,
   });
+
+  const tooltipAccessor = (event: CalendarEvent) => {
+    return `${event.title} (${event.department})\n${format(event.start, 'MMM d, yyyy h:mm aa')} - ${format(event.end, 'h:mm aa')}`;
+  };
+
+  const handleEventMouseOver = (event: CalendarEvent, e: React.MouseEvent) => {
+    setTooltipEvent(event);
+    setTooltipPosition({ x: e.clientX + 10, y: e.clientY + 10 });
+  };
+
+  const handleEventMouseOut = () => {
+    setTooltipEvent(null);
+    setTooltipPosition(null);
+  };
 
   const handleDoubleClickEvent = (input: CalendarEvent | SlotInfo) => {
     if ('start' in input && 'end' in input && !('title' in input)) {
@@ -166,6 +181,19 @@ export default function BigCalendar() {
       setPendingSlot(null);
       setModalOpen(true);
     }
+  };
+
+  const handleTooltipClick = (event: CalendarEvent) => {
+    setEditingEvent(event);
+    setPendingSlot(null);
+    setModalOpen(true);
+    setTooltipEvent(null);
+    setTooltipPosition(null);
+  };
+
+  const handleCloseTooltip = () => {
+    setTooltipEvent(null);
+    setTooltipPosition(null);
   };
 
   const handleSaveEvent = (
@@ -221,7 +249,7 @@ export default function BigCalendar() {
   };
 
   return (
-    <div className="p-4 pt-0">
+    <div className="p-4 pt-0 font-poppins">
       <div className="h-[calc(100vh-8rem)] w-full max-w-7xl mx-auto">
         <DnDCalendar
           localizer={localizer}
@@ -232,6 +260,7 @@ export default function BigCalendar() {
           startAccessor="start"
           endAccessor="end"
           eventPropGetter={eventPropGetter}
+          tooltipAccessor={tooltipAccessor}
           toolbar={false}
           date={date}
           onNavigate={setDate}
@@ -241,12 +270,51 @@ export default function BigCalendar() {
           selectable="ignoreEvents"
           onSelectSlot={handleDoubleClickEvent}
           onSelectEvent={handleDoubleClickEvent}
-          className="bg-white backdrop-blur-sm transition-all duration-500 ease-in-out"
+          components={{
+            event: (props) => (
+              <div
+                onMouseOver={(e) => handleEventMouseOver(props.event as CalendarEvent, e)}
+                onMouseOut={handleEventMouseOut}
+                style={{ height: '100%' }}
+              >
+                {props.title}
+              </div>
+            ),
+          }}
+          className="bg-white backdrop-blur-sm transition-all duration-500 ease-in-out font-poppins"
         />
       </div>
 
+      {/* Custom Tooltip */}
+      {tooltipEvent && tooltipPosition && currentView === 'month' && (
       <div
-        className={`fixed inset-0 bg-black/50 transition-opacity duration-300 ease-in-out ${
+        className="fixed z-20 bg-green-100 text-green-800 p-3 rounded-lg shadow-lg max-w-xs font-poppins"
+        style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
+        onClick={() => handleTooltipClick(tooltipEvent)}
+      >
+        <div className="flex justify-between items-start">
+          <p className="font-bold">{tooltipEvent.title}</p>
+          <button
+            className="text-green-800 hover:text-green-900 font-bold"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent tooltip click from triggering
+              handleCloseTooltip();
+            }}
+          >
+            ×
+          </button>
+        </div>
+        <p>{tooltipEvent.department}</p>
+        <p>
+          {format(tooltipEvent.start, 'MMM d, yyyy h:mm aa')} -{' '}
+          {format(tooltipEvent.end, 'h:mm aa')}
+        </p>
+        <button className="mt-2 text-blue-400 hover:underline">Edit</button>
+      </div>
+    )}
+
+      <div
+        className={`fixed inset-0 bg-gray/50 transition-opacity duration-300 ease-in-out ${
           modalOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >

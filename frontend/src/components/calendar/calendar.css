@@ -1,22 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-
-.rbc-btn-group{
-    display: flex;
-    justify-content: center;
-    margin: 5px;
-}
-
-.rbc-header {
-    color: #333;
-    font-weight: bold;
-    text-align: center;
-    padding: 20px;
-
-}
-
 .rbc-calendar {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif !important; /* Set Poppins as default font */
   box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.055);
   box-sizing: border-box;
   height: 100%;
@@ -24,6 +9,17 @@
   border-radius: 16px;
   overflow: hidden;
   margin: 4px;
+}
+
+/* Ensure all elements within the modal inherit Poppins font */
+.rbc-calendar .font-poppins, .rbc-calendar .font-poppins * {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.rbc-btn-group {
+  display: flex;
+  justify-content: center;
+  margin: 5px;
 }
 
 .rbc-header {
@@ -53,7 +49,6 @@
   font-weight: bold;
 }
 
-
 .rbc-event {
   padding: 6px 10px;
   border-radius: 8px;
@@ -80,9 +75,9 @@
   border-radius: 4px 0 0 4px;
 }
 
-.rbc-event .rbc-event-content{
-    height: 20px;
-    font-size: small;
+.rbc-event .rbc-event-content {
+  height: 20px;
+  font-size: small;
 }
 
 .rbc-toolbar {
@@ -123,7 +118,9 @@
   }
 }
 
-.rbc-time-view, .rbc-agenda-view, .rbc-month-view {
+.rbc-time-view,
+.rbc-agenda-view,
+.rbc-month-view {
   border: none;
   height: 100%;
   background-color: #ffffff;
@@ -138,12 +135,14 @@
   cursor: pointer;
 }
 
-.rbc-time-header, .rbc-time-content, .rbc-agenda-view table {
+.rbc-time-header,
+.rbc-time-content,
+.rbc-agenda-view table {
   border-color: #d1d5db;
 }
 
 .rbc-time-slot {
-  align-items: center;     
+  align-items: center;
   justify-content: center;
   padding-left: 10px;
   padding-right: 5px;

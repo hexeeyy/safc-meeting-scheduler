@@ -106,13 +106,13 @@ export default function CalendarModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="space-y-4 rounded-lg bg-green-50 dark:bg-gray-800 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-700 shadow-lg font-poppins">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold capitalize">
+          <DialogTitle className="text-lg font-semibold capitalize font-poppins">
             {isEditing ? `${meetingType} Details` : `New ${meetingType}`}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-1.5">
-          <Label htmlFor="meeting-title" className="text-sm font-medium text-green-800 dark:text-green-200">
+          <Label htmlFor="meeting-title" className="text-sm font-medium text-green-800 dark:text-green-200 font-poppins">
             Meeting Title
           </Label>
           <Input
@@ -120,39 +120,39 @@ export default function CalendarModal({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter meeting title"
-            className="bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-600 focus:ring-green-500 focus:border-green-500"
+            className="bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-600 focus:ring-green-500 focus:border-green-500 font-poppins"
           />
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium text-green-800 dark:text-green-200">Meeting Time</Label>
+          <Label className="text-sm font-medium text-green-800 dark:text-green-200 font-poppins">Meeting Time</Label>
           <div className="flex gap-3">
             <Input
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="w-full bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-600 focus:ring-green-500 focus:border-green-500"
+              className="w-full bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-600 focus:ring-green-500 focus:border-green-500 font-poppins"
               placeholder="Start time"
             />
             <Input
               type="time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
-              className="w-full bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-600 focus:ring-green-500 focus:border-green-500"
+              className="w-full bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-600 focus:ring-green-500 focus:border-green-500 font-poppins"
               placeholder="End time"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium text-green-800 dark:text-green-200">Meeting Type</Label>
+          <Label className="text-sm font-medium text-green-800 dark:text-green-200 font-poppins">Meeting Type</Label>
           <div className="flex gap-3 flex-wrap">
             {Object.entries(meetingTypeColors).map(([type, color]) => (
               <button
                 key={type}
                 type="button"
                 onClick={() => setMeetingType(type)}
-                className={`w-8 h-8 rounded-full border-2 transition-all ${
+                className={`w-8 h-8 rounded-full border-2 transition-all font-poppins ${
                   meetingType === type
                     ? 'border-green-500 dark:border-green-400 scale-110'
                     : 'border-green-200 dark:border-green-600'
@@ -167,14 +167,14 @@ export default function CalendarModal({
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-sm font-medium text-green-800 dark:text-green-200">Department</Label>
+          <Label className="text-sm font-medium text-green-800 dark:text-green-200 font-poppins">Department</Label>
           <div className="flex gap-3 flex-wrap">
             {departments.map((dept) => (
               <button
                 key={dept}
                 type="button"
                 onClick={() => setDepartment(dept)}
-                className={`px-3 py-1 rounded-md Harrow-5 text-sm transition-all ${
+                className={`px-3 py-1 rounded-md text-sm transition-all font-poppins ${
                   department === dept
                     ? 'border-green-500 dark:border-green-400 bg-green-100 dark:bg-green-700'
                     : 'border-green-200 dark:border-green-600 bg-white dark:bg-gray-900'
@@ -190,7 +190,7 @@ export default function CalendarModal({
           <Button
             variant="outline"
             onClick={onClose}
-            className="border-green-300 text-green-800 dark:border-green-700 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-700"
+            className="border-green-300 text-green-800 dark:border-green-700 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-700 font-poppins"
           >
             Cancel
           </Button>
@@ -198,14 +198,14 @@ export default function CalendarModal({
             <Button
               variant="destructive"
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white dark:text-white"
+              className="bg-red-600 hover:bg-red-700 text-white dark:text-white font-poppins"
             >
               Delete
             </Button>
           )}
           <Button
             onClick={handleSubmit}
-            className="bg-green-600 hover:bg-green-700 text-white dark:text-white"
+            className="bg-green-600 hover:bg-green-700 text-white dark:text-white font-poppins"
           >
             Save
           </Button>
