@@ -18,6 +18,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import './calendar.css';
 import CalendarModal from '../calendar/CalendarModal';
+import { AnimatePresence, motion } from "framer-motion";
 
 const localizer = dateFnsLocalizer({
   format,
@@ -284,6 +285,41 @@ export default function BigCalendar() {
           className="bg-white backdrop-blur-sm transition-all duration-500 ease-in-out font-poppins"
         />
       </div>
+
+      {/* Custom Tooltip with Exit Animation */}
+      <AnimatePresence initial={false}>
+        {tooltipEvent && tooltipPosition && currentView === 'month' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed z-20 bg-green-100 text-green-800 p-3 rounded-lg shadow-lg max-w-xs font-poppins"
+            style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
+            onClick={() => handleTooltipClick(tooltipEvent)}
+            key="tooltip"
+          >
+            <div className="flex justify-between items-start">
+              <p className="font-bold">{tooltipEvent.title}</p>
+              <button
+                className="text-green-800 hover:text-green-900 font-bold"
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent tooltip click from triggering
+                  handleCloseTooltip();
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <p>{tooltipEvent.department}</p>
+            <p>
+              {format(tooltipEvent.start, 'MMM d, yyyy h:mm aa')} -{' '}
+              {format(tooltipEvent.end, 'h:mm aa')}
+            </p>
+            <button className="mt-2 text-blue-400 hover:underline">Edit</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Custom Tooltip */}
       {tooltipEvent && tooltipPosition && currentView === 'month' && (
