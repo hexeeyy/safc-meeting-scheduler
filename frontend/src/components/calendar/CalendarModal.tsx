@@ -11,16 +11,24 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
 
-interface CalendarModalProps {
+export interface CalendarModalProps {
   isOpen: boolean;
+  eventId?: string;
   initialTitle?: string;
   initialColor?: string;
   initialDepartment?: string;
+  initialMeetingType?: string;
   initialStartTime?: string;
   initialEndTime?: string;
-  eventId?: string;
   onClose: () => void;
-  onSave: (title: string, color: string, department: string, startTime: string, endTime: string) => void;
+  onSave: (
+    title: string,
+    color: string,
+    department: string,
+    startTime: string,
+    endTime: string,
+    meetingType: string
+  ) => void;
   onDelete?: () => void;
 }
 
@@ -86,7 +94,7 @@ export default function CalendarModal({
 
   const handleSubmit = () => {
     if (title.trim() && startTime && endTime && department) {
-      onSave(title, meetingTypeColors[meetingType], department, startTime, endTime);
+      onSave(title, meetingTypeColors[meetingType], department, startTime, endTime, meetingType);
       onClose();
     }
   };

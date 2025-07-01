@@ -26,6 +26,7 @@ interface CalendarEvent extends RBCEvent {
   end: Date;
   color?: string;
   department: string;
+  meetingType: string;
 }
 
 const initialEvents: CalendarEvent[] = [
@@ -36,6 +37,7 @@ const initialEvents: CalendarEvent[] = [
     end: new Date(2025, 5, 20, 11, 0),
     color: '#10B981',
     department: 'Risk Management',
+    meetingType: 'Weekly Sync',
   },
   {
     id: '2',
@@ -44,6 +46,7 @@ const initialEvents: CalendarEvent[] = [
     end: new Date(2025, 5, 22, 15, 0),
     color: '#3B82F6',
     department: 'Customer Service',
+    meetingType: 'Personal',
   },
   {
     id: '3',
@@ -52,6 +55,7 @@ const initialEvents: CalendarEvent[] = [
     end: new Date(2025, 5, 25, 10, 0),
     color: '#EF4444',
     department: 'Underwriting',
+    meetingType: 'Milestone',
   },
 ];
 
@@ -150,12 +154,32 @@ export default function BigCalendar() {
   });
 
   const tooltipAccessor = (event: CalendarEvent) => {
-    return `${event.title} (${event.department})\n${format(event.start, 'MMM d, yyyy h:mm aa')} - ${format(event.end, 'h:mm aa')}`;
+    return `${event.title} (${event.department})\n${format(event.start, 'MMM d, yyyy h:mm aa')} - ${format(event.end, 'h:mm aa')}\nType: ${event.meetingType}`;
   };
 
   const handleEventMouseOver = (event: CalendarEvent, e: React.MouseEvent) => {
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    const tooltipWidth = 300; // Approximate tooltip width
+    const tooltipHeight = 150; // Approximate tooltip height
+    const padding = 10;
+
+    // Calculate initial position
+    let x = rect.right + padding;
+    let y = rect.top;
+
+    // Adjust position to stay within viewport
+    if (x + tooltipWidth > window.innerWidth) {
+      x = rect.left - tooltipWidth - padding;
+    }
+    if (y + tooltipHeight > window.innerHeight) {
+      y = window.innerHeight - tooltipHeight - padding;
+    }
+    if (y < 0) {
+      y = padding;
+    }
+
     setTooltipEvent(event);
-    setTooltipPosition({ x: e.clientX + 10, y: e.clientY + 10 });
+    setTooltipPosition({ x, y });
   };
 
   const handleEventMouseOut = () => {
@@ -193,7 +217,8 @@ export default function BigCalendar() {
     color: string,
     department: string,
     startTime: string,
-    endTime: string
+    endTime: string,
+    meetingType: string
   ) => {
     const parseTime = (timeStr: string, baseDate: Date) => {
       const [hours, minutes] = timeStr.split(':').map(Number);
@@ -210,6 +235,7 @@ export default function BigCalendar() {
         title,
         color,
         department,
+        meetingType,
         start: parseTime(startTime, editingEvent.start),
         end: parseTime(endTime, editingEvent.start),
       };
@@ -221,6 +247,7 @@ export default function BigCalendar() {
         title,
         color,
         department,
+        meetingType,
         start: parseTime(startTime, baseDate),
         end: parseTime(endTime, baseDate),
       };
@@ -232,13 +259,9 @@ export default function BigCalendar() {
     setModalOpen(false);
   };
 
-  const handleDeleteEvent = () => {
-    if (editingEvent) {
-      setEvents((prev) => prev.filter((evt) => evt.id !== editingEvent.id));
-      setEditingEvent(null);
-      setModalOpen(false);
-    }
-  };
+  function handleDeleteEvent(): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <div className="p-4 pt-0 font-poppins">
@@ -277,68 +300,43 @@ export default function BigCalendar() {
         />
       </div>
 
-      {/* Custom Tooltip with Exit Animation */}
+      {/* Enhanced Tooltip with Animation */}
       <AnimatePresence initial={false}>
         {tooltipEvent && tooltipPosition && currentView === 'month' && (
           <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed z-20 bg-green-100 text-green-800 p-3 rounded-lg shadow-lg max-w-xs font-poppins"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="fixed z-20 bg-white p-4 rounded-xl shadow-xl max-w-sm border border-gray-100 font-poppins"
             style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
             onClick={() => handleTooltipClick(tooltipEvent)}
             key="tooltip"
           >
-            <div className="flex justify-between items-start">
-              <p className="font-bold">{tooltipEvent.title}</p>
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="font-semibold text-lg text-gray-800">{tooltipEvent.title}</h3>
               <button
-                className="text-green-800 hover:text-green-900 font-bold"
+                className="text-gray-500 hover:text-gray-700 text-xl font-medium"
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent tooltip click from triggering
+                  e.stopPropagation();
                   handleCloseTooltip();
                 }}
               >
                 ×
               </button>
             </div>
-            <p>{tooltipEvent.department}</p>
-            <p>
-              {format(tooltipEvent.start, 'MMM d, yyyy h:mm aa')} -{' '}
-              {format(tooltipEvent.end, 'h:mm aa')}
-            </p>
-            <button className="mt-2 text-blue-400 ">Edit</button>
+            <div className="space-y-1 text-sm text-gray-600">
+              <p><span className="font-medium">Department:</span> {tooltipEvent.department}</p>
+              <p><span className="font-medium">Type:</span> {tooltipEvent.meetingType}</p>
+              <p><span className="font-medium">Date:</span> {format(tooltipEvent.start, 'MMM d, yyyy')}</p>
+              <p><span className="font-medium">Time:</span> {format(tooltipEvent.start, 'h:mm aa')} - {format(tooltipEvent.end, 'h:mm aa')}</p>
+            </div>
+            <button className="mt-3 text-blue-500 hover:text-blue-600 font-medium text-sm hover:underline">
+              Edit Event
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Custom Tooltip */}
-      {tooltipEvent && tooltipPosition && currentView === 'month' && (
-      <div
-        className="fixed z-20 bg-green-100 text-green-800 p-3 rounded-lg shadow-lg max-w-xs font-poppins"
-        style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
-        onClick={() => handleTooltipClick(tooltipEvent)}
-      >
-        <div className="flex justify-between items-start">
-          <p className="font-extrabold">{tooltipEvent.title}</p>
-          <button
-            className="text-green-800 hover:text-green-900 font-bold"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent tooltip click from triggering
-              handleCloseTooltip();
-            }}
-          >
-            ×
-          </button>
-        </div>
-        <p>{tooltipEvent.department}</p>
-        <p>
-          {format(tooltipEvent.start, 'MMM d, yyyy h:mm aa')} -{' '}
-          {format(tooltipEvent.end, 'h:mm aa')}
-        </p>
-        <button className="mt-2 text-blue-400 hover:underline">Edit</button>
-      </div>
-    )}
 
       <div
         className={`fixed inset-0 bg-gray/50 transition-opacity duration-300 ease-in-out ${
@@ -356,6 +354,7 @@ export default function BigCalendar() {
             initialTitle={editingEvent?.title}
             initialColor={editingEvent?.color}
             initialDepartment={editingEvent?.department}
+            initialMeetingType={editingEvent?.meetingType}
             initialStartTime={
               editingEvent
                 ? editingEvent.start.toTimeString().slice(0, 5)
