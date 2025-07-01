@@ -1,17 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Calendar,
-  dateFnsLocalizer,
-  Event as RBCEvent,
-  NavigateAction,
-  SlotInfo,
-  View,
-} from 'react-big-calendar';
-import withDragAndDrop, {
-  withDragAndDropProps,
-} from 'react-big-calendar/lib/addons/dragAndDrop';
+import {Calendar, dateFnsLocalizer, Event as RBCEvent, NavigateAction, SlotInfo, View,} from 'react-big-calendar';
+import withDragAndDrop, {withDragAndDropProps, } from 'react-big-calendar/lib/addons/dragAndDrop';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -316,7 +307,7 @@ export default function BigCalendar() {
               {format(tooltipEvent.start, 'MMM d, yyyy h:mm aa')} -{' '}
               {format(tooltipEvent.end, 'h:mm aa')}
             </p>
-            <button className="mt-2 text-blue-400 hover:underline">Edit</button>
+            <button className="mt-2 text-blue-400 ">Edit</button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -329,7 +320,7 @@ export default function BigCalendar() {
         onClick={() => handleTooltipClick(tooltipEvent)}
       >
         <div className="flex justify-between items-start">
-          <p className="font-bold">{tooltipEvent.title}</p>
+          <p className="font-extrabold">{tooltipEvent.title}</p>
           <button
             className="text-green-800 hover:text-green-900 font-bold"
             onClick={(e) => {
