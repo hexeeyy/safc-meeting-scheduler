@@ -215,52 +215,93 @@ export default function BigCalendar() {
     setTooltipPosition(null);
   };
 
-  const handleSaveEvent = (
-    title: string,
-    color: string,
-    department: string,
-    startTime: string,
-    endTime: string,
-    meetingType: string
-  ) => {
-    const parseTime = (timeStr: string, baseDate: Date) => {
-      const [hours, minutes] = timeStr.split(':').map(Number);
-      const date = new Date(baseDate);
-      date.setHours(hours);
-      date.setMinutes(minutes);
-      date.setSeconds(0);
-      return date;
-    };
-
-    if (editingEvent) {
-      const updatedEvent = {
-        ...editingEvent,
-        title,
-        color,
-        department,
-        meetingType,
-        start: parseTime(startTime, editingEvent.start),
-        end: parseTime(endTime, editingEvent.start),
-      };
-      setEvents((prev) => prev.map((evt) => (evt.id === editingEvent.id ? updatedEvent : evt)));
-    } else if (pendingSlot) {
-      const baseDate = pendingSlot.start;
-      const newEvent: CalendarEvent = {
-        id: crypto.randomUUID(),
-        title,
-        color,
-        department,
-        meetingType,
-        start: parseTime(startTime, baseDate),
-        end: parseTime(endTime, baseDate),
-      };
-      setEvents((prev) => [...prev, newEvent]);
-    }
-
-    setEditingEvent(null);
-    setPendingSlot(null);
-    setModalOpen(false);
+ const handleSaveEvent = (
+  title: string,
+  color: string,
+  department: string,
+  startTime: string,
+  endTime: string,
+  meetingType: string
+) => {
+  const parseTime = (timeStr: string, baseDate: Date) => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    const date = new Date(baseDate);
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setSeconds(0);
+    return date;
   };
+
+  const isSameDay = (date1: Date, date2: Date) => {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  };
+
+  const isOverlapping = (newStart: Date, newEnd: Date, existingStart: Date, existingEnd: Date) => {
+    return newStart < existingEnd && newEnd > existingStart;
+  };
+
+  let baseDate: Date;
+  let newEvent: CalendarEvent;
+
+  if (editingEvent) {
+    baseDate = editingEvent.start;
+    newEvent = {
+      ...editingEvent,
+      title,
+      color,
+      department,
+      meetingType,
+      start: parseTime(startTime, baseDate),
+      end: parseTime(endTime, baseDate),
+    };
+  } else if (pendingSlot) {
+    baseDate = pendingSlot.start;
+    newEvent = {
+      id: crypto.randomUUID(),
+      title,
+      color,
+      department,
+      meetingType,
+      start: parseTime(startTime, baseDate),
+      end: parseTime(endTime, baseDate),
+    };
+  } else {
+    return;
+  }
+  if (newEvent.start >= newEvent.end) {
+    alert('End time must be after start time.');
+    return;
+  }
+
+  const hasConflict = events.some((event) => {
+    if (editingEvent && event.id === editingEvent.id) {
+      return false; // Skip the event being edited
+    }
+    return (
+      isSameDay(newEvent.start, event.start) &&
+      isOverlapping(newEvent.start, newEvent.end, event.start, event.end)
+    );
+  });
+
+  if (hasConflict) {
+    alert('This event conflicts with an existing event on the same day and time.');
+    return;
+  }
+  
+  if (editingEvent) {
+    setEvents((prev) => prev.map((evt) => (evt.id === editingEvent.id ? newEvent : evt)));
+  } else {
+    setEvents((prev) => [...prev, newEvent]);
+  }
+
+  setEditingEvent(null);
+  setPendingSlot(null);
+  setModalOpen(false);
+};
 
 function handleDeleteEvent(): void {
   if (!editingEvent) return;

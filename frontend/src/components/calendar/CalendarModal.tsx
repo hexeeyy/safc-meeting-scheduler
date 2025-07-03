@@ -31,6 +31,7 @@ export interface CalendarModalProps {
     meetingType: string
   ) => void;
   onDelete?: () => void;
+  errorMessage?: string;
 }
 
 const meetingTypeColors: { [key: string]: string } = {

@@ -27,7 +27,6 @@ export default function View({ activeView, setActiveView }: ViewProps) {
     };
   }, []);
 
-  // Do not render the dropdown if the active view is 'agenda'
   if (activeView === 'agenda') {
     return null;
   }
