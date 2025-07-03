@@ -1,4 +1,4 @@
-type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'work_week';
+type CalendarView = 'month' | 'week' | 'day' | 'agenda';
 
 interface DateViewProps {
   activeView: CalendarView;
@@ -31,22 +31,9 @@ export default function DateView({ activeView, date }: DateViewProps) {
       case 'week': {
         const startOfWeek = new Date(date);
         const endOfWeek = new Date(date);
-        endOfWeek.setDate(startOfWeek.getDate() + 7 - startOfWeek.getDay() - 1); // Adjust to end of week (Saturday)
+        endOfWeek.setDate(startOfWeek.getDate() + 7 - startOfWeek.getDay() - 1);
         startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
         return `${formatDate(startOfWeek, { month: 'long', day: 'numeric' })} – ${formatDate(endOfWeek, {
-          month: 'long',
-          day: 'numeric',
-        })}`;
-      }
-
-      case 'work_week': {
-        const day = date.getDay(); // Sunday = 0
-        const diffToMonday = (day + 6) % 7;
-        const monday = new Date(date);
-        monday.setDate(date.getDate() - diffToMonday);
-        const friday = new Date(monday);
-        friday.setDate(monday.getDate() + 4);
-        return `${formatDate(monday, { month: 'long', day: 'numeric' })} – ${formatDate(friday, {
           month: 'long',
           day: 'numeric',
         })}`;

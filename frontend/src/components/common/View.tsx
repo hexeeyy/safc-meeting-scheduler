@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'work_week';
+type CalendarView = 'month' | 'week' | 'day' | 'agenda';
 
 interface ViewProps {
   activeView: CalendarView;
@@ -23,9 +23,14 @@ export default function View({ activeView, setActiveView }: ViewProps) {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Do not render the dropdown if the active view is 'agenda'
+  if (activeView === 'agenda') {
+    return null;
+  }
 
   return (
     <>
@@ -41,7 +46,7 @@ export default function View({ activeView, setActiveView }: ViewProps) {
       <div className="relative inline-block text-left" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="inline-flex items-center gap-1 rounded-full border text-sm font-medium border-green-200 dark:border-green-700 bg-white dark:bg-gray-800 px-4 py-2 capitalize text-green-800 dark:text-green-200 hover:bg-green-50 dark:hover:bg-green-600 transition-all duration-200 ease-in-out"
+          className="inline-flex items-center gap-1 rounded-full border text-sm font-medium border-green-200 dark:border-green-700 bg-white dark:bg-gray-800 px-4 py-2 capitalize text-green-800 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-600 transition-all duration-200 ease-in-out"
         >
           {activeView}
           <ChevronDown className="h-4 w-4 transform transition-transform duration-300 rotate-0 hover:rotate-90" aria-hidden="true" />
@@ -49,13 +54,13 @@ export default function View({ activeView, setActiveView }: ViewProps) {
 
         {dropdownOpen && (
           <div className="absolute mt-2 w-40 origin-top-right rounded-md bg-green-50 dark:bg-gray-800 shadow-lg ring-opacity-5 focus:outline-none z-50 p-1 transition-all duration-300 ease-in-out pr-2">
-            {(['month', 'week', 'day', 'agenda', 'work_week'] as const).map((view) => (
+            {(['month', 'week', 'day'] as const).map((view) => (
               <button
                 key={view}
                 onClick={() => {
                   setActiveView(view);
                   setDropdownOpen(false);
-                  window.dispatchEvent(new CustomEvent('calendar:view', { detail: view }));
+                  window.dispatchEvent(new CustomEvent('calendar:viewChange', { detail: view }));
                 }}
                 className={`dropdown-item w-full text-left px-3 py-3 text-sm capitalize rounded transition-all duration-200 ease-in-out font-medium
                   ${

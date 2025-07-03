@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import View from '../common/View';
 import DateView from './DateView';
 
-type CalendarView = 'month' | 'week' | 'day' | 'agenda' | 'work_week';
-const allowedViews: CalendarView[] = ['month', 'week', 'day', 'agenda', 'work_week'];
+type CalendarView = 'month' | 'week' | 'day' |'agenda' ;
+const allowedViews: CalendarView[] = ['month', 'week', 'day', 'agenda'];
 
 export default function CalendarHeader() {
   const [activeView, setActiveView] = useState<CalendarView>('month');

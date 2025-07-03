@@ -8,6 +8,10 @@ import {
 import React from 'react';
 
 export default function ActionIcons() {
+  const handleMeetingListClick = () => {
+    window.dispatchEvent(new CustomEvent('calendar:viewChange', { detail: 'agenda' }));
+  };
+
   return (
     <div className="flex items-center gap-2">
       <div className="relative group inline-block">
@@ -25,6 +29,7 @@ export default function ActionIcons() {
       <div className="relative group inline-block">
         <button
           aria-label="Meeting List"
+          onClick={handleMeetingListClick}
           className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
         >
           <ClipboardDocumentListIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />

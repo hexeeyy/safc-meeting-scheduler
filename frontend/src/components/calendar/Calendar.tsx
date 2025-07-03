@@ -202,18 +202,6 @@ export default function BigCalendar() {
     setTooltipPosition(null);
   };
 
-  const handleDoubleClickEvent = (input: CalendarEvent | SlotInfo) => {
-    if ('start' in input && 'end' in input && !('title' in input)) {
-      setEditingEvent(null);
-      setPendingSlot(input);
-      setModalOpen(true);
-    } else {
-      setEditingEvent(input as CalendarEvent);
-      setPendingSlot(null);
-      setModalOpen(true);
-    }
-  };
-
   const handleTooltipClick = (event: CalendarEvent) => {
     setEditingEvent(event);
     setPendingSlot(null);
@@ -274,9 +262,16 @@ export default function BigCalendar() {
     setModalOpen(false);
   };
 
-  function handleDeleteEvent(): void {
-    throw new Error('Function not implemented.');
-  }
+function handleDeleteEvent(): void {
+  if (!editingEvent) return;
+
+  setEvents((prevEvents) =>
+    prevEvents.filter((event) => event.id !== editingEvent.id)
+  );
+
+  setEditingEvent(null);
+  setModalOpen(false);
+}
 
   const handleSelectSlot = (slotInfo: SlotInfo) => {
     if (clickTimeoutRef.current) {
@@ -343,7 +338,7 @@ export default function BigCalendar() {
         />
       </div>
 
-      <AnimatePresence initial={false}>
+      <AnimatePresence initial={true}>
         {tooltipEvent && tooltipPosition && currentView === 'month' && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
