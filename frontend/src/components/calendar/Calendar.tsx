@@ -1,15 +1,15 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import {Calendar, dateFnsLocalizer, Event as RBCEvent, NavigateAction, SlotInfo, View,} from 'react-big-calendar';
-import withDragAndDrop, {withDragAndDropProps, } from 'react-big-calendar/lib/addons/dragAndDrop';
+import { Calendar, dateFnsLocalizer, Event as RBCEvent, NavigateAction, SlotInfo, View } from 'react-big-calendar';
+import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import './calendar.css';
 import CalendarModal from '../calendar/CalendarModal';
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from 'framer-motion';
 
 const localizer = dateFnsLocalizer({
   format,
@@ -119,6 +119,22 @@ export default function BigCalendar() {
     return () => window.removeEventListener('calendar:viewChange', viewListener);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (tooltipEvent && tooltipPosition) {
+        const tooltipElement = document.querySelector('.tooltip-container');
+        if (tooltipElement && !tooltipElement.contains(e.target as Node)) {
+          handleCloseTooltip();
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [tooltipEvent, tooltipPosition]);
+
   const handleViewChange = (view: View) => {
     if (view !== currentView) {
       setCurrentView(view);
@@ -146,7 +162,7 @@ export default function BigCalendar() {
       color: 'white',
       borderRadius: '6px',
       padding: '6px',
-      border: 'Removal',
+      border: 'none',
       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
       cursor: 'pointer',
       fontSize: '14px',
@@ -159,15 +175,13 @@ export default function BigCalendar() {
 
   const handleEventMouseOver = (event: CalendarEvent, e: React.MouseEvent) => {
     const rect = (e.target as HTMLElement).getBoundingClientRect();
-    const tooltipWidth = 300; // Approximate tooltip width
-    const tooltipHeight = 150; // Approximate tooltip height
+    const tooltipWidth = 300;
+    const tooltipHeight = 150;
     const padding = 10;
 
-    // Calculate initial position
     let x = rect.right + padding;
     let y = rect.top;
 
-    // Adjust position to stay within viewport
     if (x + tooltipWidth > window.innerWidth) {
       x = rect.left - tooltipWidth - padding;
     }
@@ -300,7 +314,6 @@ export default function BigCalendar() {
         />
       </div>
 
-      {/* Enhanced Tooltip with Animation */}
       <AnimatePresence initial={false}>
         {tooltipEvent && tooltipPosition && currentView === 'month' && (
           <motion.div
@@ -308,7 +321,7 @@ export default function BigCalendar() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed z-20 bg-white p-4 rounded-xl shadow-xl max-w-sm border border-gray-100 font-poppins"
+            className="fixed z-20 bg-white p-4 rounded-xl shadow-xl max-w-sm border border-gray-100 font-poppins tooltip-container"
             style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
             onClick={() => handleTooltipClick(tooltipEvent)}
             key="tooltip"
