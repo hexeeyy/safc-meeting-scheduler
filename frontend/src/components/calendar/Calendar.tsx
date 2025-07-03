@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef} from 'react';
 import { Calendar, dateFnsLocalizer, Event as RBCEvent, NavigateAction, SlotInfo, View } from 'react-big-calendar';
 import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
@@ -33,8 +33,8 @@ const initialEvents: CalendarEvent[] = [
   {
     id: '1',
     title: 'Team Meeting',
-    start: new Date(2025, 5, 20, 10, 0),
-    end: new Date(2025, 5, 20, 11, 0),
+    start: new Date(2025, 6, 20, 10, 0),
+    end: new Date(2025, 6, 20, 11, 0),
     color: '#10B981',
     department: 'Risk Management',
     meetingType: 'Weekly Sync',
@@ -42,8 +42,8 @@ const initialEvents: CalendarEvent[] = [
   {
     id: '2',
     title: 'Doctor Appointment',
-    start: new Date(2025, 5, 22, 14, 0),
-    end: new Date(2025, 5, 22, 15, 0),
+    start: new Date(2025, 6, 22, 14, 0),
+    end: new Date(2025, 6, 22, 15, 0),
     color: '#3B82F6',
     department: 'Customer Service',
     meetingType: 'Personal',
@@ -51,8 +51,8 @@ const initialEvents: CalendarEvent[] = [
   {
     id: '3',
     title: 'Project Deadline',
-    start: new Date(2025, 5, 25, 9, 0),
-    end: new Date(2025, 5, 25, 10, 0),
+    start: new Date(2025, 6, 25, 9, 0),
+    end: new Date(2025, 6, 25, 10, 0),
     color: '#EF4444',
     department: 'Underwriting',
     meetingType: 'Milestone',
@@ -71,6 +71,7 @@ export default function BigCalendar() {
   const [pendingSlot, setPendingSlot] = useState<SlotInfo | null>(null);
   const [tooltipEvent, setTooltipEvent] = useState<CalendarEvent | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleNavigate = useCallback(
     (action: NavigateAction) => {
@@ -277,6 +278,34 @@ export default function BigCalendar() {
     throw new Error('Function not implemented.');
   }
 
+  const handleSelectSlot = (slotInfo: SlotInfo) => {
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+      setEditingEvent(null);
+      setPendingSlot(slotInfo);
+      setModalOpen(true);
+    } else {
+      clickTimeoutRef.current = setTimeout(() => {
+        clickTimeoutRef.current = null;
+      }, 300); 
+    }
+  };
+
+  const handleSelectEvent = (event: CalendarEvent) => {
+    setEditingEvent(event);
+    setPendingSlot(null);
+    setModalOpen(true);
+  };
+  
+  useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div className="p-4 pt-0 font-poppins">
       <div className="h-[calc(100vh-8rem)] w-full max-w-7xl mx-auto">
@@ -296,9 +325,9 @@ export default function BigCalendar() {
           view={currentView}
           onView={handleViewChange}
           views={allowedViews}
-          selectable="ignoreEvents"
-          onSelectSlot={handleDoubleClickEvent}
-          onSelectEvent={handleDoubleClickEvent}
+          selectable
+          onSelectSlot={handleSelectSlot}
+          onSelectEvent={handleSelectEvent}
           components={{
             event: (props) => (
               <div
@@ -321,8 +350,8 @@ export default function BigCalendar() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed z-20 bg-white p-4 rounded-xl shadow-xl max-w-sm border border-gray-100 font-poppins tooltip-container"
-            style={{ top: tooltipPosition.y, left: tooltipPosition.x }}
+            className="fixed z-20 p-4 bg-green-100 rounded-xl shadow-xl max-w-sm border border-gray-100 font-poppins tooltip-container"
+            style={{ top: tooltipPosition.y, left: tooltipPosition.x}}
             onClick={() => handleTooltipClick(tooltipEvent)}
             key="tooltip"
           >
