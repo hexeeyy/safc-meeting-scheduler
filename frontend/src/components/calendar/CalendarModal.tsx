@@ -1,5 +1,7 @@
 'use client';
 
+import { useCallback, useEffect, useState } from 'react';
+import { Calendar, Clock, Tag, Building2, Trash2, RotateCcw } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -9,9 +11,38 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useEffect, useState } from 'react';
-import { Calendar, Clock, Tag, Building2, Trash2 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { meetingTypeColors, departments } from './calendarConstants';
 
+// Constants
+const DEFAULT_MEETING_TYPE = 'Team Meeting';
+const BUSINESS_HOURS = { start: 9, end: 18 }; // 9:00 AM to 6:00 PM
+const MINIMUM_MEETING_DURATION_MINUTES = 15;
+
+// Generate time slots in 15-minute increments with 12-hour format
+const generateTimeSlots = () => {
+  const slots: { value: string; label: string }[] = [];
+  for (let hour = BUSINESS_HOURS.start; hour < BUSINESS_HOURS.end; hour++) {
+    for (let minute = 0; minute < 60; minute += 15) {
+      const value = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      const period = hour < 12 ? 'AM' : 'PM';
+      const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+      const label = `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+      slots.push({ value, label });
+    }
+  }
+  return slots;
+};
+
+const TIME_SLOTS = generateTimeSlots();
+
+// Types
 export interface CalendarModalProps {
   isOpen: boolean;
   eventId?: string;
@@ -34,74 +65,135 @@ export interface CalendarModalProps {
   errorMessage?: string;
 }
 
-const meetingTypeColors: { [key: string]: string } = {
-  'Team Meeting': '#10B981',
-  'Client Call': '#3B82F6',
-  'Review Session': '#F59E0B',
-  'Training': '#8B5CF6',
-  'Planning': '#EF4444',
-  'One-on-One': '#06B6D4',
-  'Budget Review': '#EC4899',
-  'Project Update': '#F97316',
-  'Brainstorming': '#6366F1',
-  'Presentation': '#14B8A6',
-};
-
-const departments: string[] = [
-  'Loans Department',
-  'Marketing Department',
-  'Repossessed Properties Department',
-  'Treasury Department',
-  'Customer Service',
-  'Accounting & Finance/CFO',
-  'Human Resource',
-  'Risk & Compliance, Audit, Remedial',
-  'IT & Operations',
-  'Executive Leadership',
-  'CSR (SAFC Heroes)',
-];
-
+/**
+ * Calendar modal component for creating or editing meetings
+ */
 export default function CalendarModal({
   isOpen,
   initialTitle = '',
-  initialColor = meetingTypeColors['Team Meeting'],
-  initialDepartment = departments[0],
+  initialColor = meetingTypeColors[DEFAULT_MEETING_TYPE],
+  initialDepartment = departments[0] ?? '',
   initialStartTime = '',
   initialEndTime = '',
   eventId,
   onClose,
   onSave,
   onDelete,
+  errorMessage,
 }: CalendarModalProps) {
+  // State
   const [title, setTitle] = useState(initialTitle);
-  const [meetingType, setMeetingType] = useState(
-    Object.keys(meetingTypeColors).find(
-      (key) => meetingTypeColors[key] === initialColor
-    ) || 'Team Meeting'
-  );
+  const [meetingType, setMeetingType] = useState(DEFAULT_MEETING_TYPE);
   const [department, setDepartment] = useState(initialDepartment);
   const [startTime, setStartTime] = useState(initialStartTime);
   const [endTime, setEndTime] = useState(initialEndTime);
+  const [localError, setLocalError] = useState<string | null>(null);
 
+  const isEditing = !!eventId;
+
+  /**
+   * Reset form to initial values or clear for new meetings
+   */
+  const resetForm = useCallback(() => {
+    setTitle('');
+    setMeetingType(DEFAULT_MEETING_TYPE);
+    setDepartment(departments[0] ?? '');
+    setStartTime('');
+    setEndTime('');
+    setLocalError(null);
+  }, []);
+
+  /**
+   * Sync form with initial props when modal opens
+   */
   useEffect(() => {
-    setTitle(initialTitle || '');
-    setMeetingType(
-      Object.keys(meetingTypeColors).find(
-        (key) => meetingTypeColors[key] === initialColor
-      ) || 'Team Meeting'
-    );
-    setDepartment(initialDepartment || departments[0]);
-    setStartTime(initialStartTime || '');
-    setEndTime(initialEndTime || '');
-  }, [initialTitle, initialColor, initialDepartment, initialStartTime, initialEndTime, isOpen]);
-
-  const handleSubmit = () => {
-    if (title.trim() && startTime && endTime && department) {
-      onSave(title, meetingTypeColors[meetingType], department, startTime, endTime, meetingType);
-      onClose();
+    if (isOpen) {
+      if (eventId) {
+        setTitle(initialTitle);
+        setMeetingType(
+          Object.keys(meetingTypeColors).find(
+            (key) => meetingTypeColors[key] === initialColor
+          ) ?? DEFAULT_MEETING_TYPE
+        );
+        setDepartment(initialDepartment);
+        setStartTime(initialStartTime);
+        setEndTime(initialEndTime);
+      } else {
+        resetForm();
+      }
+      setLocalError(null);
     }
+  }, [
+    initialTitle,
+    initialColor,
+    initialDepartment,
+    initialStartTime,
+    initialEndTime,
+    isOpen,
+    eventId,
+    resetForm,
+  ]);
+
+  /**
+   * Validate form inputs
+   */
+  const validateInputs = useCallback(() => {
+    if (!title.trim()) return 'Title is required.';
+    if (!startTime) return 'Start time is required.';
+    if (!endTime) return 'End time is required.';
+    if (!department) return 'Department is required.';
+
+    const [startHours, startMinutes] = startTime.split(':').map(Number);
+    const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+    if (
+      startHours < BUSINESS_HOURS.start ||
+      startHours >= BUSINESS_HOURS.end ||
+      endHours < BUSINESS_HOURS.start ||
+      endHours > BUSINESS_HOURS.end
+    ) {
+      return 'Meetings must be scheduled between 9:00 AM and 6:00 PM.';
+    }
+
+    const startInMinutes = startHours * 60 + startMinutes;
+    const endInMinutes = endHours * 60 + endMinutes;
+
+    if (endInMinutes <= startInMinutes) {
+      return 'End time must be after start time.';
+    }
+
+    if (endInMinutes - startInMinutes < MINIMUM_MEETING_DURATION_MINUTES) {
+      return `Meetings must be at least ${MINIMUM_MEETING_DURATION_MINUTES} minutes long.`;
+    }
+
+    return null;
+  }, [title, startTime, endTime, department]);
+
+  /**
+   * Handle form submission
+   */
+  const handleSubmit = () => {
+    const error = validateInputs();
+    if (error) {
+      setLocalError(error);
+      return;
+    }
+
+    onSave(
+      title,
+      meetingTypeColors[meetingType],
+      department,
+      startTime,
+      endTime,
+      meetingType
+    );
+    resetForm();
+    onClose();
   };
 
+  /**
+   * Handle meeting deletion
+   */
   const handleDelete = () => {
     if (onDelete) {
       onDelete();
@@ -111,68 +203,124 @@ export default function CalendarModal({
     }
   };
 
-  const isEditing = !!eventId;
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md w-full px-10 rounded-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-900 text-green-900 dark:text-green-100 border border-green-200 dark:border-green-700 shadow-lg font-poppins transition-all duration-200">
+      <DialogContent className="max-w-md rounded-lg border border-green-200 bg-gradient-to-br from-green-50 to-green-100 px-10 font-poppins text-green-900 shadow-lg transition-all duration-200 dark:from-gray-800 dark:to-gray-900 dark:border-green-700 dark:text-green-100">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-green-800 dark:text-green-200 flex items-center gap-1.5">
-            <Calendar className="w-7 h-7" />
-            {isEditing ? `${meetingType}` : `New ${meetingType}`}
+          <DialogTitle className="flex items-center gap-1.5 text-2xl font-bold text-green-800 dark:text-green-200">
+            <Calendar className="h-7 w-7" />
+            {isEditing ? meetingType : `New ${meetingType}`}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-2 py-2">
-          <div className="grid grid-cols-3 items-center gap-2">
-            <Label htmlFor="meeting-title" className="text-s font-medium text-green-800 dark:text-green-200 flex items-center gap-1">
-              <Tag className="w-5 h-5" /> Title
+        <div className="grid gap-4 py-4">
+          {(errorMessage || localError) && (
+            <p className="text-sm text-red-600">{errorMessage || localError}</p>
+          )}
+
+          <div className="grid grid-cols-3 items-center gap-4">
+            <Label
+              htmlFor="meeting-title"
+              className="flex items-center gap-1 text-sm font-medium text-green-800 dark:text-green-200"
+            >
+              <Tag className="h-5 w-5" /> Title
             </Label>
             <Input
               id="meeting-title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setLocalError(null);
+              }}
               placeholder="Meeting title"
-              className="col-span-2 bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-300 dark:border-green-600 focus:ring-1 focus:ring-green-500 focus:border-green-500 rounded-md text-sm transition-all duration-150 font-poppins"
+              className={`col-span-2 rounded-md border text-sm transition-all duration-150 dark:bg-gray-900 dark:text-green-100 ${
+                localError?.includes('Title')
+                  ? 'border-red-500'
+                  : 'border-green-300 dark:border-green-600'
+              } focus:border-green-500 focus:ring-1 focus:ring-green-500`}
               aria-required="true"
             />
           </div>
 
-          <div className="grid grid-cols-3 items-center gap-2">
-            <Label className="text-s font-medium text-green-800 dark:text-green-200 flex items-center gap-1">
-              <Clock className="w-5 h-5" /> Time
+          <div className="grid grid-cols-3 items-center gap-4">
+            <Label className="flex items-center gap-1 text-sm font-medium text-green-800 dark:text-green-200">
+              <Clock className="h-5 w-5" /> Time
             </Label>
-            <div className="col-span-2 flex gap-2">
-              <Input
-                type="time"
+            <div className="col-span-2 flex gap-4">
+              <Select
                 value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-300 dark:border-green-600 focus:ring-1 focus:ring-green-500 focus:border-green-500 rounded-md text-sm transition-all duration-150 font-poppins"
-                aria-required="true"
-              />
-              <Input
-                type="time"
+                onValueChange={(value) => {
+                  setStartTime(value);
+                  setLocalError(null);
+                }}
+              >
+                <SelectTrigger
+                  className={`w-full rounded-md border bg-white text-sm font-poppins text-green-900 transition-all duration-150 dark:bg-gray-900 dark:text-green-100 ${
+                    localError?.includes('Start time')
+                      ? 'border-red-500'
+                      : 'border-green-300 dark:border-green-600'
+                  } hover:bg-green-50 dark:hover:bg-green-800 focus:border-green-500 focus:ring-1 focus:ring-green-500`}
+                  aria-required="true"
+                >
+                  <SelectValue placeholder="Select start time" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-900 dark:border-green-600">
+                  {TIME_SLOTS.map(({ value, label }) => (
+                    <SelectItem
+                      key={value}
+                      value={value}
+                      className="text-green-900 dark:text-green-100 hover:bg-green-100 dark:hover:bg-green-700 focus:bg-green-100 dark:focus:bg-green-700"
+                    >
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
                 value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-                className="w-full bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-300 dark:border-green-600 focus:ring-1 focus:ring-green-500 focus:border-green-500 rounded-md text-sm transition-all duration-150 font-poppins"
-                aria-required="true"
-              />
+                onValueChange={(value) => {
+                  setEndTime(value);
+                  setLocalError(null);
+                }}
+              >
+                <SelectTrigger
+                  className={`w-full rounded-md border bg-white text-sm font-poppins text-green-900 transition-all duration-150 dark:bg-gray-900 dark:text-green-100 ${
+                    localError?.includes('End time')
+                      ? 'border-red-500'
+                      : 'border-green-300 dark:border-green-600'
+                  } hover:bg-green-50 dark:hover:bg-green-800 focus:border-green-500 focus:ring-1 focus:ring-green-500`}
+                  aria-required="true"
+                >
+                  <SelectValue placeholder="Select end time" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-900 dark:border-green-600">
+                  {TIME_SLOTS.map(({ value, label }) => (
+                    <SelectItem
+                      key={value}
+                      value={value}
+                      className="text-green-900 dark:text-green-100 hover:bg-green-100 dark:hover:bg-green-700 focus:bg-green-100 dark:focus:bg-green-700"
+                    >
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <div className="grid grid-cols-3 items-start gap-2">
-            <Label className="text-s font-medium text-green-800 dark:text-green-200 flex items-center gap-1">
-              <Tag className="w-5 h-5" /> Type
+          <div className="grid grid-cols-3 items-start gap-4">
+            <Label className="flex items-center gap-1 text-sm font-medium text-green-800 dark:text-green-200">
+              <Tag className="h-5 w-5" /> Type
             </Label>
-            <div className="col-span-2 flex flex-wrap gap-1.5">
+            <div className="col-span-2 flex flex-wrap gap-2">
               {Object.entries(meetingTypeColors).map(([type, color]) => (
                 <button
                   key={type}
                   type="button"
                   onClick={() => setMeetingType(type)}
-                  className={`w-7 h-7 rounded-full border transition-all duration-150 hover:scale-105 focus:outline-none focus:ring-1 focus:ring-green-500 ${
+                  className={`h-7 w-7 rounded-full border transition-all duration-150 hover:scale-105 focus:outline-none focus:ring-1 focus:ring-green-500 ${
                     meetingType === type
-                      ? 'border-green-500 dark:border-green-400 scale-105'
+                      ? 'scale-105 border-green-500 dark:border-green-400'
                       : 'border-green-300 dark:border-green-600'
                   }`}
                   style={{ backgroundColor: color }}
@@ -185,20 +333,20 @@ export default function CalendarModal({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 items-start gap-2">
-            <Label className="text-s font-medium text-green-800 dark:text-green-200 flex items-center gap-1">
-              <Building2 className="w-5 h-5" /> Dept
+          <div className="grid grid-cols-3 items-start gap-4">
+            <Label className="flex items-center gap-1 text-sm font-medium text-green-800 dark:text-green-200">
+              <Building2 className="h-5 w-5" /> Dept
             </Label>
-            <div className="col-span-2 flex flex-wrap gap-1.5">
+            <div className="col-span-2 flex flex-wrap gap-2">
               {departments.map((dept) => (
                 <button
                   key={dept}
                   type="button"
                   onClick={() => setDepartment(dept)}
-                  className={`px-2 py-0.5 rounded-md text-xs transition-all duration-150 hover:bg-green-200 dark:hover:bg-green-600 focus:outline-none focus:ring-1 focus:ring-green-500 font-poppins ${
+                  className={`rounded-md border px-2 py-0.5 text-xs transition-all duration-150 hover:bg-green-200 focus:outline-none focus:ring-1 focus:ring-green-500 dark:hover:bg-green-600 ${
                     department === dept
-                      ? 'border-green-500 dark:border-green-400 bg-green-100 dark:bg-green-700'
-                      : 'border-green-300 dark:border-green-600 bg-white dark:bg-gray-900'
+                      ? 'border-green-500 bg-green-100 dark:border-green-400 dark:bg-green-700'
+                      : 'border-green-300 bg-white dark:border-green-600 dark:bg-gray-900'
                   } text-green-900 dark:text-green-100`}
                   aria-label={`Select ${dept}`}
                 >
@@ -209,11 +357,19 @@ export default function CalendarModal({
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex justify-end gap-2 pt-4">
+          <Button
+            variant="outline"
+            onClick={resetForm}
+            className="flex items-center gap-1 rounded-md border border-green-300 px-3 py-1 text-sm text-green-800 transition-all duration-150 hover:bg-green-100 dark:border-green-700 dark:text-green-200 dark:hover:bg-green-600"
+          >
+            <RotateCcw className="h-3 w-3" />
+            Reset
+          </Button>
           <Button
             variant="outline"
             onClick={onClose}
-            className="border-green-300 text-green-800 dark:border-green-700 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-600 rounded-md text-sm px-3 py-1 transition-all duration-150 font-poppins"
+            className="rounded-md border border-green-300 px-3 py-1 text-sm text-green-800 transition-all duration-150 hover:bg-green-100 dark:border-green-700 dark:text-green-200 dark:hover:bg-green-600"
           >
             Cancel
           </Button>
@@ -221,14 +377,14 @@ export default function CalendarModal({
             <Button
               variant="destructive"
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white dark:text-white rounded-md text-sm px-3 py-1 transition-all duration-150 font-poppins flex items-center gap-1"
+              className="flex items-center gap-1 rounded-md bg-red-600 px-3 py-1 text-sm text-white transition-all duration-150 hover:bg-red-700 dark:text-white"
             >
-              <Trash2 className="w-3 h-3" /> Delete
+              <Trash2 className="h-3 w-3" /> Delete
             </Button>
           )}
           <Button
             onClick={handleSubmit}
-            className="bg-green-600 hover:bg-green-700 text-white dark:text-white rounded-md text-sm px-3 py-1 transition-all duration-150 font-poppins"
+            className="rounded-md bg-green-600 px-3 py-1 text-sm text-white transition-all duration-150 hover:bg-green-700 dark:text-white"
             disabled={!title.trim() || !startTime || !endTime || !department}
           >
             Save

@@ -1,16 +1,8 @@
-import React from "react";
-import Sidebar from "@/components/common/Sidebar";
-import BigCalendar from "@/components/calendar/Calendar";
+import React from 'react'
+import HomePage from '../pages/HomePage'
 
-export default function HomePage() {
+export default function page() {
   return (
-    <main className="flex h-screen">
-      <div className="">
-        <Sidebar />
-      </div>
-      <div className="flex-1 h-full w-full overflow-auto">
-        <BigCalendar />
-      </div>
-    </main>
-  );
+    <><HomePage/></>
+  )
 }

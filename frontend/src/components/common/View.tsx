@@ -52,7 +52,7 @@ export default function View({ activeView, setActiveView }: ViewProps) {
         </button>
 
         {dropdownOpen && (
-          <div className="absolute mt-2 w-40 origin-top-right rounded-md bg-green-50 dark:bg-gray-800 shadow-lg ring-opacity-5 focus:outline-none z-50 p-1 transition-all duration-300 ease-in-out pr-2">
+          <div className="absolute mt-2 w-40 origin-top-right rounded-md bg-green-50 dark:bg-gray-800 shadow-lg ring-opacity-5 focus:outline-none z-100 p-1 transition-all duration-300 ease-in-out pr-2">
             {(['month', 'week', 'day'] as const).map((view) => (
               <button
                 key={view}

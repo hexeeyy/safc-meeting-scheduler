@@ -1,12 +1,10 @@
 'use client';
 
 import { 
-  BellAlertIcon,
   ClipboardDocumentListIcon, 
-  Cog6ToothIcon, 
-  MagnifyingGlassIcon 
+  Cog6ToothIcon,  
 } from '@heroicons/react/20/solid';
-import { Bell, BellDotIcon, BellElectricIcon } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import React from 'react';
 
 export default function ActionIcons() {
