@@ -172,7 +172,7 @@ export default function Sidebar({ events, selectedDepartment, setSelectedDepartm
                   setSelectedDepartment(e.target.value);
                   onFilterEvents('all', searchQuery); // Update filtered events on department change
                 }}
-                className="dropdown w-full px-3 py-2 text-sm bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border dark:border-green-600 rounded-lg focus:ring-0 focus: border-green-500 font-poppins transition-all duration-300 appearance-none"
+                className="dropdown w-full px-3 py-2 text-sm bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-300 dark:border-green-600 rounded-lg focus:ring-0 focus:border-green-500 font-poppins transition-all duration-300 appearance-none"
                 aria-label="Filter by department"
               >
                 {filteredDepartments.map((dept) => (

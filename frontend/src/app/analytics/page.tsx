@@ -1,6 +1,6 @@
 'use client';
 
-import MeetingAnalytics from './MeetingAnalytics'; // Adjust path as needed
+import MeetingAnalytics from '../pages/MeetingAnalytics'; // Adjust path as needed
 import { CalendarEvent } from '@/components/calendar/ReusableCalendar';
 import { useState } from 'react';
 
