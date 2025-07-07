@@ -2,21 +2,29 @@
 
 import { 
   ClipboardDocumentListIcon, 
-  Cog6ToothIcon,  
+  UserCircleIcon,  
 } from '@heroicons/react/20/solid';
 import { Bell } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 export default function ActionIcons() {
+  const router = useRouter();
+
   const handleMeetingListClick = () => {
     window.dispatchEvent(new CustomEvent('calendar:viewChange', { detail: 'agenda' }));
+  };
+
+  const handleNotificationsClick = () => {
+    router.push('/notifications');
   };
 
   return (
     <div className="flex items-center gap-2">
       <div className="relative group inline-block">
         <button
-          aria-label="Search"
+          aria-label="Notifications"
+          onClick={handleNotificationsClick}
           className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
         >
           <Bell className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
@@ -41,13 +49,13 @@ export default function ActionIcons() {
 
       <div className="relative group inline-block">
         <button
-          aria-label="Settings"
+          aria-label="User"
           className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
         >
-          <Cog6ToothIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+          <UserCircleIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
         </button>
         <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-green-800 dark:bg-gray-900 text-green-100 dark:text-green-200 text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
-          Settings
+          User
         </div>
       </div>
     </div>

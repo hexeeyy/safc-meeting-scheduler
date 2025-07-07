@@ -2,30 +2,18 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { Calendar, Clock, Tag, Building2, Trash2, RotateCcw } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import {Dialog, DialogContent, DialogHeader, DialogTitle,} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import {Select,SelectContent,SelectItem,SelectTrigger, SelectValue,} from '@/components/ui/select';
 import { meetingTypeColors, departments } from './calendarConstants';
+import { DialogOverlay } from '@radix-ui/react-dialog';
 
-// Constants
 const DEFAULT_MEETING_TYPE = 'Team Meeting';
-const BUSINESS_HOURS = { start: 9, end: 18 }; // 9:00 AM to 6:00 PM
+const BUSINESS_HOURS = { start: 9, end: 18 }; 
 const MINIMUM_MEETING_DURATION_MINUTES = 15;
 
-// Generate time slots in 15-minute increments with 12-hour format
 const generateTimeSlots = () => {
   const slots: { value: string; label: string }[] = [];
   for (let hour = BUSINESS_HOURS.start; hour < BUSINESS_HOURS.end; hour++) {
@@ -41,8 +29,6 @@ const generateTimeSlots = () => {
 };
 
 const TIME_SLOTS = generateTimeSlots();
-
-// Types
 export interface CalendarModalProps {
   isOpen: boolean;
   eventId?: string;
@@ -65,9 +51,6 @@ export interface CalendarModalProps {
   errorMessage?: string;
 }
 
-/**
- * Calendar modal component for creating or editing meetings
- */
 export default function CalendarModal({
   isOpen,
   initialTitle = '',
@@ -81,19 +64,14 @@ export default function CalendarModal({
   onDelete,
   errorMessage,
 }: CalendarModalProps) {
-  // State
   const [title, setTitle] = useState(initialTitle);
   const [meetingType, setMeetingType] = useState(DEFAULT_MEETING_TYPE);
   const [department, setDepartment] = useState(initialDepartment);
   const [startTime, setStartTime] = useState(initialStartTime);
   const [endTime, setEndTime] = useState(initialEndTime);
   const [localError, setLocalError] = useState<string | null>(null);
-
   const isEditing = !!eventId;
 
-  /**
-   * Reset form to initial values or clear for new meetings
-   */
   const resetForm = useCallback(() => {
     setTitle('');
     setMeetingType(DEFAULT_MEETING_TYPE);
@@ -103,9 +81,6 @@ export default function CalendarModal({
     setLocalError(null);
   }, []);
 
-  /**
-   * Sync form with initial props when modal opens
-   */
   useEffect(() => {
     if (isOpen) {
       if (eventId) {
@@ -134,9 +109,6 @@ export default function CalendarModal({
     resetForm,
   ]);
 
-  /**
-   * Validate form inputs
-   */
   const validateInputs = useCallback(() => {
     if (!title.trim()) return 'Title is required.';
     if (!startTime) return 'Start time is required.';
@@ -169,9 +141,6 @@ export default function CalendarModal({
     return null;
   }, [title, startTime, endTime, department]);
 
-  /**
-   * Handle form submission
-   */
   const handleSubmit = () => {
     const error = validateInputs();
     if (error) {
@@ -191,9 +160,6 @@ export default function CalendarModal({
     onClose();
   };
 
-  /**
-   * Handle meeting deletion
-   */
   const handleDelete = () => {
     if (onDelete) {
       onDelete();
@@ -205,6 +171,7 @@ export default function CalendarModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogOverlay className="fixed inset-0 z-40 backdrop-blur-sm bg-black/30" />
       <DialogContent className="max-w-md rounded-lg border border-green-200 bg-gradient-to-br from-green-50 to-green-100 px-10 font-poppins text-green-900 shadow-lg transition-all duration-200 dark:from-gray-800 dark:to-gray-900 dark:border-green-700 dark:text-green-100">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5 text-2xl font-bold text-green-800 dark:text-green-200">
