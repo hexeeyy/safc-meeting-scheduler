@@ -168,7 +168,7 @@ export default function CalendarWrapper({
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative z-0">
       <ReusableCalendar
         events={filteredEvents}
         date={date}

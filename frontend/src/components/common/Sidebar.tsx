@@ -43,25 +43,9 @@ export default function Sidebar({ events, selectedDepartment, setSelectedDepartm
       count: filteredEvents.filter((event) => event.end < today && !event.canceled).length,
       onClick: () => onFilterEvents('done', searchQuery),
     },
-    {
-      name: 'Canceled Meetings',
-      icon: XCircle,
-      count: filteredEvents.filter((event) => event.canceled).length,
-      onClick: () => onFilterEvents('canceled', searchQuery),
-    },
-    {
-      name: 'Meeting Analytics',
-      icon: BarChart2,
-      count: null,
-      onClick: () => {
-        router.push('/analytics'); // Navigate to /analytics
-      },
-    },
   ];
 
   const filteredDepartments = ['All', ...departments];
-
-  // Handle search input change with debouncing
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
     onFilterEvents('all', value); // Update filtered events on search
@@ -170,7 +154,7 @@ export default function Sidebar({ events, selectedDepartment, setSelectedDepartm
                 value={selectedDepartment}
                 onChange={(e) => {
                   setSelectedDepartment(e.target.value);
-                  onFilterEvents('all', searchQuery); // Update filtered events on department change
+                  onFilterEvents('all', searchQuery);
                 }}
                 className="dropdown w-full px-3 py-2 text-sm bg-white dark:bg-gray-900 text-green-900 dark:text-green-100 border border-green-300 dark:border-green-600 rounded-lg focus:ring-0 focus:border-green-500 font-poppins transition-all duration-300 appearance-none"
                 aria-label="Filter by department"

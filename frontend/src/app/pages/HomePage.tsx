@@ -18,11 +18,10 @@ export default function HomePage() {
 
   const handleAddMeeting = () => {
     const now = new Date();
-    // Set default start time to tomorrow at 9:00 AM
     const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 9, 0);
     const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 10, 0);
     setPendingSlot({ start, end });
-    setEditingEventId(undefined); // Clear editing mode
+    setEditingEventId(undefined); 
     setModalOpen(true);
   };
 
@@ -33,7 +32,7 @@ export default function HomePage() {
     if (selectedDepartment !== 'All') {
       filtered = filtered.filter((event) => event.department === selectedDepartment);
     }
-
+    
     if (searchQuery) {
       filtered = filtered.filter((event) => event.title.toLowerCase().includes(searchQuery.toLowerCase()));
     }
@@ -61,8 +60,6 @@ export default function HomePage() {
 
     const [startHours, startMinutes] = startTime.split(':').map(Number);
     const [endHours, endMinutes] = endTime.split(':').map(Number);
-
-    // Use pendingSlot's date (tomorrow by default) and apply the selected time
     const start = new Date(pendingSlot.start);
     start.setHours(startHours, startMinutes);
     const end = new Date(pendingSlot.start);
@@ -76,7 +73,7 @@ export default function HomePage() {
       department,
       meetingType,
       color,
-      canceled: false, // Explicitly set canceled to false
+      canceled: false, 
     };
 
     if (editingEventId) {

@@ -16,7 +16,6 @@
 }
 
 .rbc-btn-group {
-  display: flex;
   justify-content: center;
   margin: 5px;
 }
@@ -46,6 +45,17 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
+}
+
+.rbc-button-link {
+  position: relative;
+  z-index: 1;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .rbc-event {
@@ -120,6 +130,8 @@
   border: none;
   height: 100%;
   background-color: #ffffff;
+  position: relative;
+  z-index: 1;
 }
 
 .rbc-show-more {

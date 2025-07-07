@@ -133,7 +133,7 @@ const eventPropGetter = (event: CalendarEvent) => {
 
   return (
     <div className="p-4 pt-0 font-poppins">
-      <div className="h-[calc(100vh-8rem)] w-full max-w-7xl mx-auto">
+      <div className="h-[calc(100vh-8rem)] w-full max-w-7xl mx-auto overflow-visible">
         <DnDCalendar
           localizer={localizer}
           events={events}
