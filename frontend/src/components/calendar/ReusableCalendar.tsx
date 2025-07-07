@@ -115,7 +115,7 @@ const getTextColor = (bg: string) => {
 };
 
 const eventPropGetter = (event: CalendarEvent) => {
-  const bgColor = event.color || '#10b981'; // fallback color
+  const bgColor = event.color || '#10b981';
   const textColor = getTextColor(bgColor);
 
   return {

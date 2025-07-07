@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation'; // Import useRouter
-import { Calendar, CheckCircle, XCircle, PlusCircle, BarChart2, Search, Menu, X } from 'lucide-react';
+import { Calendar, CheckCircle, XCircle, Search, Menu, X } from 'lucide-react';
 import { departments } from '@/components/calendar/calendarConstants';
 import { CalendarEvent } from '@/components/calendar/ReusableCalendar';
 
@@ -14,10 +14,9 @@ interface SidebarProps {
   onFilterEvents: (filter: 'upcoming' | 'done' | 'canceled' | 'all', searchQuery: string) => void;
 }
 
-export default function Sidebar({ events, selectedDepartment, setSelectedDepartment, onAddMeeting, onFilterEvents }: SidebarProps) {
+export default function Sidebar({ events, selectedDepartment, setSelectedDepartment, onFilterEvents }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const router = useRouter(); // Initialize router
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 

@@ -50,6 +50,7 @@ export default function ActionIcons() {
       <div className="relative group inline-block">
         <button
           aria-label="User"
+          onClick={() => router.push('/login')}
           className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
         >
           <UserCircleIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />

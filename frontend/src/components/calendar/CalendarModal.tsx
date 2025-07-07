@@ -38,6 +38,7 @@ export interface CalendarModalProps {
   initialMeetingType?: string;
   initialStartTime?: string;
   initialEndTime?: string;
+  existingEvents?: { id: string; startTime: string; endTime: string }[];
   onClose: () => void;
   onSave: (
     title: string,
@@ -59,6 +60,7 @@ export default function CalendarModal({
   initialStartTime = '',
   initialEndTime = '',
   eventId,
+  existingEvents = [],
   onClose,
   onSave,
   onDelete,
@@ -109,37 +111,47 @@ export default function CalendarModal({
     resetForm,
   ]);
 
-  const validateInputs = useCallback(() => {
-    if (!title.trim()) return 'Title is required.';
-    if (!startTime) return 'Start time is required.';
-    if (!endTime) return 'End time is required.';
-    if (!department) return 'Department is required.';
+const validateInputs = useCallback(() => {
+  if (!title.trim()) return 'Title is required.';
+  if (!startTime) return 'Start time is required.';
+  if (!endTime) return 'End time is required.';
+  if (!department) return 'Department is required.';
 
-    const [startHours, startMinutes] = startTime.split(':').map(Number);
-    const [endHours, endMinutes] = endTime.split(':').map(Number);
+  const [startHours, startMinutes] = startTime.split(':').map(Number);
+  const [endHours, endMinutes] = endTime.split(':').map(Number);
 
-    if (
-      startHours < BUSINESS_HOURS.start ||
-      startHours >= BUSINESS_HOURS.end ||
-      endHours < BUSINESS_HOURS.start ||
-      endHours > BUSINESS_HOURS.end
-    ) {
-      return 'Meetings must be scheduled between 9:00 AM and 6:00 PM.';
-    }
+  if (
+    startHours < BUSINESS_HOURS.start ||
+    startHours >= BUSINESS_HOURS.end ||
+    endHours < BUSINESS_HOURS.start ||
+    endHours > BUSINESS_HOURS.end
+  ) {
+    return 'Meetings must be scheduled between 9:00 AM and 6:00 PM.';
+  }
 
-    const startInMinutes = startHours * 60 + startMinutes;
-    const endInMinutes = endHours * 60 + endMinutes;
+  const startInMinutes = startHours * 60 + startMinutes;
+  const endInMinutes = endHours * 60 + endMinutes;
 
-    if (endInMinutes <= startInMinutes) {
-      return 'End time must be after start time.';
-    }
+  if (endInMinutes <= startInMinutes) {
+    return 'End time must be after start time.';
+  }
 
-    if (endInMinutes - startInMinutes < MINIMUM_MEETING_DURATION_MINUTES) {
-      return `Meetings must be at least ${MINIMUM_MEETING_DURATION_MINUTES} minutes long.`;
-    }
+  if (endInMinutes - startInMinutes < MINIMUM_MEETING_DURATION_MINUTES) {
+    return `Meetings must be at least ${MINIMUM_MEETING_DURATION_MINUTES} minutes long.`;
+  }
 
-    return null;
-  }, [title, startTime, endTime, department]);
+  const isConflict = existingEvents.some((event) => {
+    if (isEditing && event.id === eventId) return false;
+    return event.startTime === startTime && event.endTime === endTime;
+  });
+
+  if (isConflict) {
+    return 'A meeting is already scheduled with the same start and end time.';
+  }
+
+  return null;
+}, [title, startTime, endTime, department, existingEvents, isEditing, eventId]);
+
 
   const handleSubmit = () => {
     const error = validateInputs();
@@ -171,7 +183,7 @@ export default function CalendarModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogOverlay className="fixed inset-0 z-40 backdrop-blur-sm bg-black/30" />
+      <DialogOverlay className="fixed inset-0 z-40 backdrop-blur-sm bg-black/20" />
       <DialogContent className="max-w-md rounded-lg border border-green-200 bg-gradient-to-br from-green-50 to-green-100 px-10 font-poppins text-green-900 shadow-lg transition-all duration-200 dark:from-gray-800 dark:to-gray-900 dark:border-green-700 dark:text-green-100">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5 text-2xl font-bold text-green-800 dark:text-green-200">
@@ -180,7 +192,7 @@ export default function CalendarModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-2">
           {(errorMessage || localError) && (
             <p className="text-sm text-red-600">{errorMessage || localError}</p>
           )}
@@ -210,10 +222,10 @@ export default function CalendarModal({
           </div>
 
           <div className="grid grid-cols-3 items-center gap-4">
-            <Label className="flex items-center gap-1 text-sm font-medium text-green-800 dark:text-green-200">
+            <Label className="flex items-center gap-1 text-xs font-medium text-green-800 dark:text-green-200">
               <Clock className="h-5 w-5" /> Time
             </Label>
-            <div className="col-span-2 flex gap-4">
+            <div className="w-35 col-span-2 flex gap-2 text-xs">
               <Select
                 value={startTime}
                 onValueChange={(value) => {

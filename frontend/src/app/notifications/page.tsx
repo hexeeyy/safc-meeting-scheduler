@@ -45,12 +45,8 @@ export default function Notifications() {
   const router = useRouter();
 
   useEffect(() => {
-    // Simulate fetching notifications from an API
     const fetchNotifications = async () => {
       try {
-        // Replace with actual API call
-        // const response = await fetch('/api/notifications');
-        // const data = await response.json();
         setNotifications(mockNotifications);
       } catch (error) {
         console.error('Error fetching notifications:', error);
@@ -59,7 +55,6 @@ export default function Notifications() {
 
     fetchNotifications();
 
-    // Listen for new meeting events (e.g., via WebSocket or polling)
     const handleNewMeeting = (event: CustomEvent) => {
       const newMeeting = event.detail as Notification;
       setNotifications((prev) => [newMeeting, ...prev]);
@@ -73,7 +68,6 @@ export default function Notifications() {
     setIsLoading(true);
     setEmailStatus(null);
     try {
-      // Simulate API call to send email
       const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -112,6 +106,7 @@ export default function Notifications() {
   const closeModal = () => {
     setSelectedNotification(null);
     setEmailStatus(null);
+    setIsLoading(false);
   };
 
   return (
@@ -175,15 +170,20 @@ export default function Notifications() {
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 <strong>Description:</strong> {selectedNotification.description}
               </p>
-              {emailStatus && (
-                <p className={`text-sm ${emailStatus.includes('success') ? 'text-green-600' : 'text-red-600'} mb-4`}>
-                  {emailStatus}
-                </p>
+              {isLoading ? (
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Sending email...</p>
+              ) : (
+                emailStatus && (
+                  <p className={`text-sm ${emailStatus?.includes('success') ? 'text-green-600' : 'text-red-600'} mb-4`}>
+                    {emailStatus}
+                  </p>
+                )
               )}
               <div className="flex justify-end gap-2">
                 <button
                   onClick={closeModal}
                   className="px-4 py-2 bg-green-800 dark:bg-green-700 text-green-100 dark:text-green-200 rounded hover:bg-green-700 dark:hover:bg-green-600 transition-all duration-300"
+                  disabled={isLoading}
                 >
                   Close
                 </button>

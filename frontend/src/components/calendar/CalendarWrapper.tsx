@@ -52,52 +52,80 @@ export default function CalendarWrapper({
     };
   }, [tooltipEvent, tooltipPosition]);
 
-  const moveEvent = useCallback(
-    ({ event, start, end }: { event: CalendarEvent; start: Date | string; end: Date | string }) => {
-      const toDate = (d: Date | string) => (d instanceof Date ? d : new Date(d));
-      const updatedStart = toDate(start);
-      const updatedEnd = toDate(end);
+  // Memoize hasTimeConflict to prevent it from being recreated on every render
+const hasTimeConflict = useCallback(
+  (start: Date, end: Date, excludeEventId?: string) => {
+    return filteredEvents.some((event) => {
+      if (excludeEventId && event.id === excludeEventId) return false;
 
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-      const selectedDate = new Date(updatedStart);
-      selectedDate.setHours(0, 0, 0, 0);
+      const eventStart = new Date(event.start).getTime();
+      const eventEnd = new Date(event.end).getTime();
+      const newStart = start.getTime();
+      const newEnd = end.getTime();
 
-      if (selectedDate < now) {
-        alert('Meetings can only be scheduled for future days.');
-        return;
-      }
+      // Block only if time range is exactly the same
+      return eventStart === newStart && eventEnd === newEnd;
+    });
+  },
+  [filteredEvents] // Dependency: filteredEvents
+);
 
-      onEditEvent({ ...event, start: updatedStart, end: updatedEnd });
-    },
-    [onEditEvent]
-  );
+const moveEvent = useCallback(
+  ({ event, start, end }: { event: CalendarEvent; start: Date | string; end: Date | string }) => {
+    const toDate = (d: Date | string) => (d instanceof Date ? d : new Date(d));
+    const updatedStart = toDate(start);
+    const updatedEnd = toDate(end);
 
-  const handleSelectSlot = useCallback(
-    (slotInfo: SlotInfo) => {
-      const now = new Date();
-      const selectedDate = new Date(slotInfo.start);
-      selectedDate.setHours(0, 0, 0, 0);
-      now.setHours(0, 0, 0, 0);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const selectedDate = new Date(updatedStart);
+    selectedDate.setHours(0, 0, 0, 0);
 
-      if (selectedDate < now) {
-        alert('Meetings can only be scheduled for future days.');
-        return;
-      }
+    if (selectedDate < now) {
+      alert('Meetings can only be scheduled for future days.');
+      return;
+    }
 
-      if (clickTimeoutRef.current) {
-        clearTimeout(clickTimeoutRef.current);
+    if (hasTimeConflict(updatedStart, updatedEnd, event.id)) {
+      alert('Cannot move event: Another meeting is already scheduled at this time on the same day.');
+      return;
+    }
+
+    onEditEvent({ ...event, start: updatedStart, end: updatedEnd });
+  },
+  [onEditEvent, hasTimeConflict] // Add hasTimeConflict to dependencies
+);
+
+const handleSelectSlot = useCallback(
+  (slotInfo: SlotInfo) => {
+    const now = new Date();
+    const selectedDate = new Date(slotInfo.start);
+    selectedDate.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
+
+    if (selectedDate < now) {
+      alert('Meetings can only be scheduled for future days.');
+      return;
+    }
+
+    if (hasTimeConflict(slotInfo.start, slotInfo.end)) {
+      alert('Cannot schedule meeting: Another meeting is already scheduled at this time on the same day and time.');
+      return;
+    }
+
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+      setPendingSlot({ start: slotInfo.start, end: slotInfo.end });
+      setModalOpen(true);
+    } else {
+      clickTimeoutRef.current = setTimeout(() => {
         clickTimeoutRef.current = null;
-        setPendingSlot({ start: slotInfo.start, end: slotInfo.end });
-        setModalOpen(true);
-      } else {
-        clickTimeoutRef.current = setTimeout(() => {
-          clickTimeoutRef.current = null;
-        }, 300);
-      }
-    },
-    [setModalOpen, setPendingSlot]
-  );
+      }, 300);
+    }
+  },
+  [setModalOpen, setPendingSlot, hasTimeConflict] // Add hasTimeConflict to dependencies
+);
 
   const handleSelectEvent = useCallback(
     (event: CalendarEvent) => {
