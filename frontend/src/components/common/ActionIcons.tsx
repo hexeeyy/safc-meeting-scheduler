@@ -25,11 +25,11 @@ export default function ActionIcons() {
         <button
           aria-label="Notifications"
           onClick={handleNotificationsClick}
-          className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+          className="p-2 rounded-full bg-white/80 dark:bg-gray-700/80 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 dark:hover:from-green-600 dark:hover:to-green-700 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         >
-          <Bell className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+          <Bell className="h-5 w-5 text-green-900 dark:text-gray-100 group-hover:text-white transition-transform duration-300 ease-in-out" />
         </button>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-green-800 dark:bg-gray-900 text-green-100 dark:text-green-200 text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 text-white text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
           Notifications
         </div>
       </div>
@@ -38,11 +38,11 @@ export default function ActionIcons() {
         <button
           aria-label="Meeting List"
           onClick={handleMeetingListClick}
-          className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+          className="p-2 rounded-full bg-white/80 dark:bg-gray-700/80 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 dark:hover:from-green-600 dark:hover:to-green-700 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         >
-          <ClipboardDocumentListIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+          <ClipboardDocumentListIcon className="h-5 w-5 text-green-900 dark:text-gray-100 group-hover:text-white transition-transform duration-300 ease-in-out" />
         </button>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-green-800 dark:bg-gray-900 text-green-100 dark:text-green-200 text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 text-white text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
           Meeting List
         </div>
       </div>
@@ -51,11 +51,11 @@ export default function ActionIcons() {
         <button
           aria-label="User"
           onClick={() => router.push('/login')}
-          className="p-2 rounded-full bg-white dark:bg-gray-800 hover:bg-green-100 dark:hover:bg-green-700 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+          className="p-2 rounded-full bg-white/80 dark:bg-gray-700/80 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 dark:hover:from-green-600 dark:hover:to-green-700 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         >
-          <UserCircleIcon className="h-5 w-5 text-green-800 dark:text-green-200 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+          <UserCircleIcon className="h-5 w-5 text-green-900 dark:text-gray-100 group-hover:text-white transition-transform duration-300 ease-in-out" />
         </button>
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-green-800 dark:bg-gray-900 text-green-100 dark:text-green-200 text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 text-white text-[10px] px-2 py-1.5 rounded whitespace-nowrap z-10 shadow-lg transition-all duration-200 ease-in-out">
           User
         </div>
       </div>

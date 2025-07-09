@@ -73,7 +73,8 @@ export default function HomePage() {
       department,
       meetingType,
       color,
-      canceled: false, 
+      canceled: false,
+      attendees: []
     };
 
     if (editingEventId) {
@@ -125,9 +126,8 @@ export default function HomePage() {
         events={events}
         selectedDepartment={selectedDepartment}
         setSelectedDepartment={setSelectedDepartment}
-        onAddMeeting={handleAddMeeting}
-        onFilterEvents={handleFilterEvents}
-      />
+        onAddMeeting={handleAddMeeting} 
+        onFilterEvents={handleFilterEvents}/>
       <div className="flex-1 h-full overflow-auto">
         <CalendarWrapper
           events={filteredEvents}

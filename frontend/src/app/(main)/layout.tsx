@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "../globals.css"; 
+import "../globals.css";
 import React from "react";
 import HeaderNav from "@/components/common/Header";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"], // choose the weights you need
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-poppins",
   display: "swap",
 });
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "SAFC Scheduler",
     images: [
       {
-        url: "https://github.com/hexeeyy/safc-meeting-scheduler/blob/main/frontend/src/app/favicon.ico",
+        url: "https://raw.githubusercontent.com/hexeeyy/safc-meeting-scheduler/main/frontend/src/app/favicon.ico",
         width: 1200,
         height: 630,
         alt: "SAFC Scheduler",
@@ -43,13 +43,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={poppins.variable}>
-      <body className="font-poppins bg-green-50">
+      <body
+        className="bg-gray-50 dark:bg-gray-800/80 backdrop-blur-lg min-h-screen"
+        suppressHydrationWarning
+      >
         <div className="flex min-h-screen flex-col">
           <HeaderNav />
-          <main className="flex-grow">{children}</main>
+          <main className="flex-3/4">{children}</main>
         </div>
       </body>
     </html>
   );
 }
-

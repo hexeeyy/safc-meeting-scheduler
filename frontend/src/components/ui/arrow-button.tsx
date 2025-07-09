@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
   ChevronLeftIcon,
@@ -40,9 +42,9 @@ function AnimatedNavButton({ direction, Icon }: AnimatedNavButtonProps) {
     <button
       aria-label={`${direction === 'PREV' ? 'Previous' : 'Next'} month`}
       onClick={handleClick}
-      className="group p-2 rounded-full bg-white hover:bg-green-50 shadow transition-all duration-300 ease-in-out transform hover:scale-105"
+      className="group p-2 rounded-full bg-white/80 dark:bg-gray-700/80 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 dark:hover:from-green-600 dark:hover:to-green-700 border border-gray-200 dark:border-gray-600 hover:shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
     >
-      <Icon className="h-5 w-5 text-green-800 group-hover:translate-x-0.5 transition-transform duration-300 ease-in-out" />
+      <Icon className="h-5 w-5 text-green-900 dark:text-gray-100 group-hover:text-white transition-transform duration-300 ease-in-out" />
     </button>
   );
 }

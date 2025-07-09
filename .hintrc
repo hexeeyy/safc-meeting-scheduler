@@ -14,10 +14,17 @@
       {
         "ignore": [
           "scrollbar-width",
-          "scrollbar-width: none"
+          "scrollbar-width: none",
+          "backdrop-filter"
         ]
       }
     ],
-    "no-inline-styles": "off"
+    "no-inline-styles": "off",
+    "axe/forms": [
+      "default",
+      {
+        "select-name": "off"
+      }
+    ]
   }
 }

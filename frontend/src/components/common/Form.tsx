@@ -120,7 +120,7 @@ export function LoginForm({
                 </Button>
               </div>
               <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-                Don't have an account?{" "}
+                Don&#39;t have an account?{" "}
                 <a
                   href="#"
                   className="text-blue-600 dark:text-blue-400 underline underline-offset-4"

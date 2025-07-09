@@ -45,14 +45,14 @@ export default function View({ activeView, setActiveView }: ViewProps) {
       <div className="relative inline-block text-left" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="inline-flex items-center gap-1 rounded-full border text-sm font-medium border-green-200 dark:border-green-700 bg-white dark:bg-gray-800 px-4 py-2 capitalize text-green-800 dark:text-green-200 hover:bg-green-100 dark:hover:bg-green-600 transition-all duration-200 ease-in-out"
+          className="inline-flex items-center gap-2 rounded-full border text-sm font-medium border-gray-200 dark:border-gray-600 bg-white/80 dark:bg-gray-700/80 px-4 py-2 capitalize text-gray-900 dark:text-gray-100 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 dark:hover:from-green-600 dark:hover:to-green-700 hover:text-white transition-all duration-200 ease-in-out"
         >
           {activeView}
-          <ChevronDown className="h-4 w-4 transform transition-transform duration-300 rotate-0 hover:rotate-90" aria-hidden="true" />
+          <ChevronDown className="h-4 w-4 transform transition-transform duration-300 group-hover:rotate-180" aria-hidden="true" />
         </button>
 
         {dropdownOpen && (
-          <div className="absolute mt-2 w-40 origin-top-right rounded-md bg-green-50 dark:bg-gray-800 shadow-lg ring-opacity-5 focus:outline-none z-100 p-1 transition-all duration-300 ease-in-out pr-2">
+          <div className="absolute mt-2 w-40 origin-top-right rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg shadow-lg ring-opacity-5 focus:outline-none z-10 p-1 transition-all duration-300 ease-in-out">
             {(['month', 'week', 'day'] as const).map((view) => (
               <button
                 key={view}
@@ -61,11 +61,11 @@ export default function View({ activeView, setActiveView }: ViewProps) {
                   setDropdownOpen(false);
                   window.dispatchEvent(new CustomEvent('calendar:viewChange', { detail: view }));
                 }}
-                className={`dropdown-item w-full text-left px-3 py-3 text-sm capitalize rounded transition-all duration-200 ease-in-out font-medium
+                className={`dropdown-item w-full text-left px-3 py-2 text-sm capitalize rounded-lg transition-all duration-200 ease-in-out font-medium
                   ${
                     activeView === view
-                      ? 'bg-green-200 dark:bg-green-700 text-green-900 dark:text-green-100'
-                      : 'text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-600 hover:text-green-900 dark:hover:text-green-100 mr-5 my-1.5'
+                      ? 'bg-gradient-to-r from-green-500 to-green-600 dark:from-green-600 dark:to-green-700 text-white'
+                      : 'text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 dark:hover:from-green-600 dark:hover:to-green-700 hover:text-white my-1'
                   }`}
               >
                 {view}
