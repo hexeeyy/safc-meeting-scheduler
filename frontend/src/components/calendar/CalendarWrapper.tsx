@@ -196,7 +196,7 @@ const handleSelectSlot = useCallback(
   }, []);
 
   return (
-    <div className="relative z-0">
+    <div className="">
       <ReusableCalendar
         events={filteredEvents}
         date={date}

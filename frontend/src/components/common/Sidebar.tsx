@@ -83,7 +83,7 @@ export default function Sidebar({
 
   const toolItems = [
     { name: 'Meeting Analytics', icon: BarChart3, onClick: () => router.push('/analytics') },
-    { name: 'Forum', icon: ChatBubbleBottomCenterIcon, onClick: () => router.push('/reminders') },
+    { name: 'Forum', icon: ChatBubbleBottomCenterIcon, onClick: () => router.push('/forums') },
     { name: 'Report', icon: FileText, onClick: () => router.push('/report') },
   ];
 

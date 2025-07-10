@@ -45,11 +45,11 @@ export default function CalendarTooltip({
 
   // Dynamic positioning to prevent overflow
   const adjustPosition = () => {
-    const tooltipWidth = 400; // Fixed width for consistency
+    const tooltipWidth = 300; // Fixed width for consistency
     const tooltipHeight = 300; // Increased to account for footer
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-    const margin = 10; // Margin from screen edges
+    const margin = 20; // Margin from screen edges
 
     let adjustedX = position.x;
     let adjustedY = position.y + 10; // Slight offset below cursor
@@ -100,12 +100,6 @@ export default function CalendarTooltip({
       aria-describedby="tooltip-description"
       aria-live="polite"
     >
-      {/* Tooltip Arrow */}
-      <div
-        className="absolute -top-2 left-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent"
-        style={{ borderBottomColor: bgColor }}
-      />
-
       <div className="flex justify-between items-start mb-4">
         <h3
           id="tooltip-title"
@@ -121,15 +115,19 @@ export default function CalendarTooltip({
           <span className="font-medium w-24" style={{ color: textColor }}>
             Department:
           </span>
-          <span className="truncate">{event.department}</span>
+          <span
+            className=" ml-5 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+            style={{ backgroundColor: textColor, color: bgColor }}
+          >
+            {event.department}
+          </span>
         </p>
         <p className="flex items-center">
           <span className="font-medium w-24" style={{ color: textColor }}>
             Type:
           </span>
-          <span className="truncate">{event.meetingType}</span>
           <span
-            className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+            className="ml-5 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
             style={{ backgroundColor: textColor, color: bgColor }}
           >
             {event.meetingType}
