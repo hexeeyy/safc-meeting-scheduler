@@ -9,14 +9,16 @@ import {
   Menu,
   X,
   ChevronRight,
+  ChevronUp,
   BarChart3,
-  Bell,
   FileText,
+  User,
 } from 'lucide-react';
 import { departments } from '@/components/calendar/calendarConstants';
 import { CalendarEvent } from '@/components/calendar/ReusableCalendar';
 import '@/app/globals.css';
 import { useRouter } from 'next/navigation';
+import { ChatBubbleBottomCenterIcon } from '@heroicons/react/20/solid';
 
 interface SidebarProps {
   events: CalendarEvent[];
@@ -34,6 +36,8 @@ export default function Sidebar({
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [upcomingLimit, setUpcomingLimit] = useState(2);
+  const [doneLimit, setDoneLimit] = useState(2);
   const router = useRouter();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -45,8 +49,11 @@ export default function Sidebar({
     return matchesDepartment && matchesSearch;
   });
 
-  const upcomingEvents = filteredEvents.filter((event) => event.start >= today && !event.canceled).slice(0, 2);
-  const doneEvents = filteredEvents.filter((event) => event.end < today && !event.canceled).slice(0, 2);
+  const upcomingEvents = filteredEvents.filter((event) => event.start >= today && !event.canceled).slice(0, upcomingLimit);
+  const doneEvents = filteredEvents.filter((event) => event.end < today && !event.canceled).slice(0, doneLimit);
+
+  const totalUpcoming = filteredEvents.filter((event) => event.start >= today && !event.canceled).length;
+  const totalDone = filteredEvents.filter((event) => event.end < today && !event.canceled).length;
 
   const filteredDepartments = ['All', ...departments];
 
@@ -58,9 +65,25 @@ export default function Sidebar({
     [onFilterEvents]
   );
 
+  const handleShowMoreUpcoming = () => {
+    setUpcomingLimit((prev) => prev + 5); // Show 5 more events
+  };
+
+  const handleShowLessUpcoming = () => {
+    setUpcomingLimit(2); // Reset to initial limit
+  };
+
+  const handleShowMoreDone = () => {
+    setDoneLimit((prev) => prev + 5); // Show 5 more events
+  };
+
+  const handleShowLessDone = () => {
+    setDoneLimit(2); // Reset to initial limit
+  };
+
   const toolItems = [
     { name: 'Meeting Analytics', icon: BarChart3, onClick: () => router.push('/analytics') },
-    { name: 'Reminders', icon: Bell, onClick: () => router.push('/reminders') },
+    { name: 'Forum', icon: ChatBubbleBottomCenterIcon, onClick: () => router.push('/reminders') },
     { name: 'Report', icon: FileText, onClick: () => router.push('/report') },
   ];
 
@@ -90,7 +113,7 @@ export default function Sidebar({
 
       {/* Content */}
       {isOpen && (
-        <div className="p-4 space-y-4">
+        <div className="flex-1 p-4 space-y-4 overflow-y-auto">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
@@ -141,7 +164,7 @@ export default function Sidebar({
                 <span className="font-medium text-sm text-gray-900 dark:text-gray-100">Upcoming Meetings</span>
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200">
-                {upcomingEvents.length}
+                {totalUpcoming}
               </span>
             </div>
             <div className="space-y-2">
@@ -159,12 +182,20 @@ export default function Sidebar({
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{event.department}</p>
                 </div>
               ))}
-              {filteredEvents.filter((event) => event.start >= today && !event.canceled).length > 2 && (
+              {totalUpcoming > upcomingLimit && (
                 <button
-                  onClick={() => onFilterEvents('upcoming', searchQuery)}
+                  onClick={handleShowMoreUpcoming}
                   className="flex items-center text-xs text-green-600 dark:text-green-400 mt-1"
                 >
                   Show More <ChevronRight className="w-4 h-4 ml-1" />
+                </button>
+              )}
+              {upcomingLimit > 2 && (
+                <button
+                  onClick={handleShowLessUpcoming}
+                  className="flex items-center text-xs text-green-600 dark:text-green-400 mt-1"
+                >
+                  Show Less <ChevronUp className="w-4 h-4 ml-1" />
                 </button>
               )}
             </div>
@@ -178,7 +209,7 @@ export default function Sidebar({
                 <span className="font-medium text-sm text-gray-900 dark:text-gray-100">Done Meetings</span>
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-green-100 dark:bg-gray-600 text-gray-600 dark:text-gray-200">
-                {doneEvents.length}
+                {totalDone}
               </span>
             </div>
             <div className="space-y-2">
@@ -196,12 +227,20 @@ export default function Sidebar({
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{event.department}</p>
                 </div>
               ))}
-              {filteredEvents.filter((event) => event.end < today && !event.canceled).length > 2 && (
+              {totalDone > doneLimit && (
                 <button
-                  onClick={() => onFilterEvents('done', searchQuery)}
+                  onClick={handleShowMoreDone}
                   className="flex items-center text-xs text-green-600 dark:text-green-400 mt-1"
                 >
-                  Show More <ChevronRight className="w-4 h-4 ml-1" />
+                  Show More <ChevronRight className="w-4 h-4_SM:ml-1" />
+                </button>
+              )}
+              {doneLimit > 2 && (
+                <button
+                  onClick={handleShowLessDone}
+                  className="flex items-center text-xs text-green-600 dark:text-green-400 mt-1"
+                >
+                  Show Less <ChevronUp className="w-4 h-4 ml-1" />
                 </button>
               )}
             </div>
@@ -210,7 +249,7 @@ export default function Sidebar({
       )}
 
       {/* Tools */}
-      <nav className="flex-1 px-4 space-y-2 mt-4">
+      <nav className="px-4 space-y-2 mt-4">
         {isOpen && (
           <h4 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide px-2 mb-1">
             Tools
@@ -231,6 +270,23 @@ export default function Sidebar({
           </button>
         ))}
       </nav>
+
+      {/* User Profile */}
+      <div
+        className={`p-4 border-t border-gray-200 dark:border-gray-600 transition-all duration-300 ${
+          isOpen ? 'block' : 'hidden'
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-green-500 dark:bg-green-600 flex items-center justify-center">
+            <User className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">John Doe</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">john.doe@example.com</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

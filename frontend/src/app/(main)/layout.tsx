@@ -44,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={poppins.variable}>
       <body
-        className="bg-gray-50 dark:bg-gray-800/80 backdrop-blur-lg min-h-screen"
+        className="bg-gray-100 backdrop-blur-lg min-h-screen"
         suppressHydrationWarning
       >
         <div className="flex min-h-screen flex-col">

@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { loginL } from "@/assets"
 import Image from "next/image"
+import Link from "next/link";
+
 
 export function LoginForm({
   className,
@@ -14,13 +16,13 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6 px-4 sm:px-0", className)} {...props}>
       <Card className="overflow-hidden p-0 shadow-lg border border-gray-200 dark:border-gray-700">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8 bg-green-200">
+          <form className="p-6 md:p-8 bg-white">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold text-green-900">
+                <h1 className="text-2xl font-bold text-green-700">
                   Welcome back
                 </h1>
-                <p className="text-green-900 text-balance">
+                <p className="text-green-700 text-balance">
                   Login to your account
                 </p>
               </div>
@@ -31,7 +33,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="email@example.com"
                   required
                   className="border-green-400 text-green-700 focus:ring-2 focus:ring-green-500"
                 />
@@ -43,7 +45,7 @@ export function LoginForm({
                   </Label>
                   <a
                     href="#"
-                    className="ml-auto text-sm text-white hover:text-green-500"
+                    className="ml-auto text-sm text-green-700 hover:text-green-500"
                   >
                     Forgot your password?
                   </a>
@@ -57,7 +59,7 @@ export function LoginForm({
               </div>
               <Button
                 type="submit"
-                className="w-full bg-green-800 hover:bg-green-700 text-white"
+                className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:opacity-80 text-white transition-colors duration-300"
               >
                 Login
               </Button>
@@ -121,16 +123,16 @@ export function LoginForm({
               </div>
               <div className="text-center text-sm text-gray-600 dark:text-gray-400">
                 Don&#39;t have an account?{" "}
-                <a
-                  href="#"
+                <Link
+                  href="/signup"
                   className="text-blue-600 dark:text-blue-400 underline underline-offset-4"
                 >
                   Sign up
-                </a>
+                </Link>
               </div>
             </div>
           </form>
-          <div className="bg-gray-100 dark:bg-gray-900 relative md:block flex items-center justify-center">
+          <div className="bg-gradient-to-r from-green-500 to-green-600  dark:bg-gray-900 relative md:block flex items-center justify-center">
             <style>
               {`
                 .float {
@@ -158,14 +160,14 @@ export function LoginForm({
         By clicking continue, you agree to our{" "}
         <a
           href="#"
-          className="text-blue-600 dark:text-blue-400 underline underline-offset-4 hover:text-blue-700 dark:hover:text-blue-500"
+          className="text-green-600 dark:text-blue-400 underline underline-offset-4 hover:text-blue-700 dark:hover:text-blue-500"
         >
           Terms of Service
         </a>{" "}
         and{" "}
         <a
           href="#"
-          className="text-blue-600 dark:text-blue-400 underline underline-offset-4 hover:text-blue-700 dark:hover:text-blue-500"
+          className="text-green-600 dark:text-blue-400 underline underline-offset-4 hover:text-blue-700 dark:hover:text-blue-500"
         >
           Privacy Policy
         </a>.
