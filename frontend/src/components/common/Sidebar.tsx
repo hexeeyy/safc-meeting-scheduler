@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   Calendar,
   CheckCircle,
@@ -43,6 +43,7 @@ export default function Sidebar({
   const toggleSidebar = () => setIsOpen(!isOpen);
   const today = new Date();
 
+  // Filter events based on department and search query
   const filteredEvents = events.filter((event) => {
     const matchesDepartment = selectedDepartment === 'All' || event.department === selectedDepartment;
     const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -57,6 +58,7 @@ export default function Sidebar({
 
   const filteredDepartments = ['All', ...departments];
 
+  // Handle search query changes
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchQuery(value);
@@ -65,20 +67,34 @@ export default function Sidebar({
     [onFilterEvents]
   );
 
+  // Handle department changes and trigger filter update
+  const handleDepartmentChange = useCallback(
+    (dept: string) => {
+      setSelectedDepartment(dept);
+      onFilterEvents('all', searchQuery);
+    },
+    [setSelectedDepartment, onFilterEvents, searchQuery]
+  );
+
+  // Ensure filtering is triggered when selectedDepartment or searchQuery changes
+  useEffect(() => {
+    onFilterEvents('all', searchQuery);
+  }, [selectedDepartment, searchQuery, onFilterEvents]);
+
   const handleShowMoreUpcoming = () => {
-    setUpcomingLimit((prev) => prev + 5); // Show 5 more events
+    setUpcomingLimit((prev) => prev + 5);
   };
 
   const handleShowLessUpcoming = () => {
-    setUpcomingLimit(2); // Reset to initial limit
+    setUpcomingLimit(2);
   };
 
   const handleShowMoreDone = () => {
-    setDoneLimit((prev) => prev + 5); // Show 5 more events
+    setDoneLimit((prev) => prev + 5);
   };
 
   const handleShowLessDone = () => {
-    setDoneLimit(2); // Reset to initial limit
+    setDoneLimit(2);
   };
 
   const toolItems = [
@@ -139,14 +155,11 @@ export default function Sidebar({
           <div>
             <select
               value={selectedDepartment}
-              onChange={(e) => {
-                setSelectedDepartment(e.target.value);
-                onFilterEvents('all', searchQuery);
-              }}
+              onChange={(e) => handleDepartmentChange(e.target.value)}
               className="w-full px-4 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-500 transition-all duration-300"
             >
               {filteredDepartments.map((dept) => (
-                <option key={dept} value={dept}>
+                <option key={dept} value={ dept}>
                   {dept}
                 </option>
               ))}
@@ -163,7 +176,7 @@ export default function Sidebar({
                 <Calendar className="w-4 h-4 text-green-500 dark:text-green-400" />
                 <span className="font-medium text-sm text-gray-900 dark:text-gray-100">Upcoming Meetings</span>
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-green- blob:https://x.ai/5d6dc2e4-4f37-4b98-b7f5-2c7e1a0a6d98100 dark:bg-green-900 text-green-700 dark:text-green-200">
                 {totalUpcoming}
               </span>
             </div>
@@ -232,7 +245,7 @@ export default function Sidebar({
                   onClick={handleShowMoreDone}
                   className="flex items-center text-xs text-green-600 dark:text-green-400 mt-1"
                 >
-                  Show More <ChevronRight className="w-4 h-4_SM:ml-1" />
+                  Show More <ChevronRight className="w-4 h-4 ml-1" />
                 </button>
               )}
               {doneLimit > 2 && (
