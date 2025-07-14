@@ -74,7 +74,8 @@ export default function HomePage() {
       meetingType,
       color,
       canceled: false,
-      attendees: []
+      attendees: [],
+      creator: ''
     };
 
     if (editingEventId) {
