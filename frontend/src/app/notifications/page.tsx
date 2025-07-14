@@ -1,3 +1,4 @@
+// Notifications.tsx
 'use client';
 
 import { Bell } from 'lucide-react';
@@ -57,7 +58,7 @@ export default function Notifications() {
         time: format(new Date(calendarEvent.start), 'h:mm a'),
         description: calendarEvent.meetingType || 'No description provided',
         createdAt: new Date().toISOString(),
-        creator: '',
+        creator: calendarEvent.creator || 'Unknown',
       };
 
       setNotifications((prev) => [newNotification, ...prev]);

@@ -1,15 +1,16 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { Send, Users, MoreVertical } from "lucide-react"
+import { Send, Users, MoreVertical, HomeIcon } from "lucide-react"
+import { HomeModernIcon } from "@heroicons/react/20/solid"
 
 interface User {
   id: string
@@ -28,17 +29,17 @@ interface Message {
 }
 
 const mockUsers: User[] = [
-  { id: "1", name: "Alice Johnson", avatar: "/placeholder.svg?height=32&width=32", online: true },
-  { id: "2", name: "Bob Smith", avatar: "/placeholder.svg?height=32&width=32", online: true },
+  { id: "1", name: "Alice Johnson", avatar: "https://via.placeholder.com/32", online: true },
+  { id: "2", name: "Bob Smith", avatar: "https://via.placeholder.com/32", online: true },
   {
     id: "3",
     name: "Carol Davis",
-    avatar: "/placeholder.svg?height=32&width=32",
+    avatar: "https://via.placeholder.com/32",
     online: false,
     lastSeen: "2 hours ago",
   },
-  { id: "4", name: "David Wilson", avatar: "/placeholder.svg?height=32&width=32", online: true },
-  { id: "5", name: "Eva Brown", avatar: "/placeholder.svg?height=32&width=32", online: false, lastSeen: "1 day ago" },
+  { id: "4", name: "David Wilson", avatar: "https://via.placeholder.com/32", online: true },
+  { id: "5", name: "Eva Brown", avatar: "https://via.placeholder.com/32", online: false, lastSeen: "1 day ago" },
 ]
 
 const initialMessages: Message[] = [
@@ -85,6 +86,7 @@ export default function ChatApp() {
   const [currentUser] = useState<User>(mockUsers[0]) // Simulate current user as Alice
   const [onlineUsers, setOnlineUsers] = useState<User[]>(mockUsers)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -94,11 +96,9 @@ export default function ChatApp() {
     scrollToBottom()
   }, [messages])
 
-  // Simulate receiving messages from other users
   useEffect(() => {
     const interval = setInterval(() => {
       if (Math.random() > 0.7) {
-        // 30% chance every 10 seconds
         const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)]
         if (randomUser.id !== currentUser.id && randomUser.online) {
           const responses = [
@@ -189,7 +189,7 @@ export default function ChatApp() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar with users */}
+      {/* Sidebar */}
       <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-2 mb-4">
@@ -198,12 +198,9 @@ export default function ChatApp() {
           </div>
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
+              <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
               <AvatarFallback>
-                {currentUser.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
+                {currentUser.name.split(" ").map((n) => n[0]).join("")}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
@@ -218,150 +215,110 @@ export default function ChatApp() {
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
               Online ({onlineUsers.filter((u) => u.online).length})
             </h3>
-            {onlineUsers
-              .filter((user) => user.online)
-              .map((user) => (
-                <div key={user.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <div className="relative">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
-                      <AvatarFallback>
-                        {user.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white rounded-full"></div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                    <p className="text-xs text-green-600">Online</p>
-                  </div>
+            {onlineUsers.filter((u) => u.online).map((user) => (
+              <div key={user.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-green-100 cursor-pointer">
+                <div className="relative">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback>{user.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                  </Avatar>
+                  <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-green-500 border-2 border-white rounded-full" />
                 </div>
-              ))}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+                  <p className="text-xs text-green-600">Online</p>
+                </div>
+              </div>
+            ))}
 
-            {onlineUsers.filter((user) => !user.online).length > 0 && (
+            {onlineUsers.filter((u) => !u.online).length > 0 && (
               <>
                 <Separator className="my-3" />
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                   Offline ({onlineUsers.filter((u) => !u.online).length})
                 </h3>
-                {onlineUsers
-                  .filter((user) => !user.online)
-                  .map((user) => (
-                    <div
-                      key={user.id}
-                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer opacity-60"
-                    >
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
-                        <AvatarFallback>
-                          {user.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.lastSeen}</p>
-                      </div>
+                {onlineUsers.filter((u) => !u.online).map((user) => (
+                  <div key={user.id} className="flex items-center gap-3 p-2 rounded-lg opacity-60 hover:bg-green-100 cursor-pointer">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback>{user.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+                      <p className="text-xs text-gray-500">{user.lastSeen}</p>
                     </div>
-                  ))}
+                  </div>
+                ))}
               </>
             )}
           </div>
         </ScrollArea>
       </div>
 
-      {/* Main chat area */}
+      {/* Chat Area */}
       <div className="flex-1 flex flex-col">
-        {/* Chat header */}
+        {/* Header */}
         <div className="bg-white border-b border-gray-200 p-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-lg font-semibold text-gray-900">General</h1>
               <p className="text-sm text-gray-500">{onlineUsers.filter((u) => u.online).length} members online</p>
             </div>
-            <Button variant="ghost" size="sm">
-              <MoreVertical className="h-4 w-4" />
-            </Button>
+            <div className="flex">
+                <HomeIcon  className="text-gray-900 w-9 h-9 rounded-full p-2 border-1 bg-gray-50 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-600 hover:text-white"
+                onClick={() => router.push("/")}/>
+            </div>
           </div>
         </div>
 
-        {/* Messages area */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {Object.entries(messageGroups).map(([dateKey, dayMessages]) => (
+        {/* Messages */}
+        <div className="flex-1 p-4 overflow-y-auto">
+          <div className="flex flex-col space-y-4">
+            {Object.entries(messageGroups).map(([dateKey, msgs]) => (
               <div key={dateKey}>
-                <div className="flex items-center justify-center my-4">
-                  <Badge variant="secondary" className="text-xs">
-                    {formatDate(new Date(dateKey))}
-                  </Badge>
+                <div className="flex justify-center my-4">
+                  <Badge variant="secondary" className="text-xs">{formatDate(new Date(dateKey))}</Badge>
                 </div>
-
-                {dayMessages.map((message, index) => {
-                  const user = getUserById(message.userId)
-                  const isCurrentUser = message.userId === currentUser.id
-                  const prevMessage = index > 0 ? dayMessages[index - 1] : null
-                  const showAvatar = !prevMessage || prevMessage.userId !== message.userId
+                {msgs.map((msg, index) => {
+                  const user = getUserById(msg.userId)
+                  const isCurrentUser = msg.userId === currentUser.id
+                  const prev = index > 0 ? msgs[index - 1] : null
+                  const showAvatar = !prev || prev.userId !== msg.userId
 
                   return (
-                    <div key={message.id} className={`flex gap-3 ${isCurrentUser ? "justify-end" : "justify-start"}`}>
+                    <div key={msg.id} className={`flex gap-3 ${isCurrentUser ? "justify-end" : "justify-start"}`}>
                       {!isCurrentUser && (
                         <div className="flex-shrink-0">
                           {showAvatar ? (
                             <Avatar className="h-8 w-8">
-                              <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name} />
-                              <AvatarFallback>
-                                {user?.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </AvatarFallback>
+                              <AvatarImage src={user?.avatar} alt={user?.name} />
+                              <AvatarFallback>{user?.name?.split(" ").map(n => n[0]).join("")}</AvatarFallback>
                             </Avatar>
-                          ) : (
-                            <div className="h-8 w-8" />
-                          )}
+                          ) : <div className="h-8 w-8" />}
                         </div>
                       )}
-
-                      <div className={`max-w-xs lg:max-w-md ${isCurrentUser ? "order-1" : ""}`}>
+                      <div className={`max-w-full lg:max-w-md break-words overflow-hidden ${isCurrentUser ? "order-1" : ""}`}>
                         {showAvatar && !isCurrentUser && (
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-sm font-medium text-gray-900">{user?.name}</span>
-                            <span className="text-xs text-gray-500">{formatTime(message.timestamp)}</span>
+                            <span className="text-xs text-gray-500">{formatTime(msg.timestamp)}</span>
                           </div>
                         )}
-
-                        <div
-                          className={`rounded-lg px-3 py-2 ${
-                            isCurrentUser ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-900"
-                          }`}
-                        >
-                          <p className="text-sm">{message.content}</p>
+                        <div className={`rounded-lg px-3 py-2 ${isCurrentUser ? "bg-green-500 text-white mt-0.5" : "bg-gray-100 text-gray-900"}`}>
+                          <p className="text-sm">{msg.content}</p>
                           {isCurrentUser && (
-                            <p className="text-xs text-blue-100 mt-1">{formatTime(message.timestamp)}</p>
+                            <p className="text-xs text-blue-100 mt-1">{formatTime(msg.timestamp)}</p>
                           )}
                         </div>
                       </div>
-
                       {isCurrentUser && (
                         <div className="flex-shrink-0">
                           {showAvatar ? (
                             <Avatar className="h-8 w-8">
-                              <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.name} />
-                              <AvatarFallback>
-                                {currentUser.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </AvatarFallback>
+                              <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                              <AvatarFallback>{currentUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
                             </Avatar>
-                          ) : (
-                            <div className="h-8 w-8" />
-                          )}
+                          ) : <div className="h-8 w-8" />}
                         </div>
                       )}
                     </div>
@@ -371,9 +328,9 @@ export default function ChatApp() {
             ))}
             <div ref={messagesEndRef} />
           </div>
-        </ScrollArea>
+        </div>
 
-        {/* Message input */}
+        {/* Input */}
         <div className="bg-white border-t border-gray-200 p-4">
           <div className="flex gap-2">
             <Input

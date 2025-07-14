@@ -28,6 +28,7 @@ const localizer = dateFnsLocalizer({
 });
 
 export interface CalendarEvent extends RBCEvent {
+  creator: string;
   attendees: [];
   canceled: boolean;
   id: string;
