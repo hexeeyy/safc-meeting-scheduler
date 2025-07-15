@@ -12,7 +12,8 @@ export default function AnalyticsPage() {
         department: 'Engineering',
         attendees: [],
         canceled: false,
-        meetingType: ''
+        meetingType: '',
+        creator: ''
     },
     {
         id: '2',
@@ -22,7 +23,8 @@ export default function AnalyticsPage() {
         department: 'Marketing',
         attendees: [],
         canceled: false,
-        meetingType: ''
+        meetingType: '',
+        creator: ''
     },
     {
         id: '3',
@@ -32,7 +34,8 @@ export default function AnalyticsPage() {
         department: 'Product',
         attendees: [],
         canceled: true,
-        meetingType: ''
+        meetingType: '',
+        creator: ''
     },
     {
         id: '4',
@@ -42,7 +45,8 @@ export default function AnalyticsPage() {
         department: 'QA',
         attendees: [],
         canceled: false,
-        meetingType: ''
+        meetingType: '',
+        creator: ''
     },
     {
         id: '5',
@@ -52,7 +56,8 @@ export default function AnalyticsPage() {
         department: 'HR',
         attendees: [],
         canceled: false,
-        meetingType: ''
+        meetingType: '',
+        creator: ''
     },
   ]
 
