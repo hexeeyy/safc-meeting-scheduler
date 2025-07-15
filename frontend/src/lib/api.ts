@@ -12,6 +12,20 @@ interface MeetingPayload {
   attendee_ids?: string[];
 }
 
+interface RawMeeting {
+  id: string;
+  title: string;
+  start_time: string;
+  end_time: string;
+  organizer_id: string;
+  attendees?: string[];
+  canceled: boolean;
+  color?: string;
+  department?: string;
+  meeting_type?: string;
+}
+
+
 export async function fetchMeetings(): Promise<CalendarEvent[]> {
   const { data: session } = await supabaseClient.auth.getSession();
   const token = session?.session?.access_token;
@@ -28,18 +42,18 @@ export async function fetchMeetings(): Promise<CalendarEvent[]> {
   }
 
   const meetings = await response.json();
-  return meetings.map((meeting: any) => ({
-    id: meeting.id,
-    title: meeting.title,
-    start: new Date(meeting.start_time),
-    end: new Date(meeting.end_time),
-    creator: meeting.organizer_id,
-    attendees: meeting.attendees || [],
-    canceled: meeting.canceled,
-    color: meeting.color,
-    department: meeting.department,
-    meetingType: meeting.meeting_type,
-  }));
+  return meetings.map((meeting: RawMeeting) => ({
+  id: meeting.id,
+  title: meeting.title,
+  start: new Date(meeting.start_time),
+  end: new Date(meeting.end_time),
+  creator: meeting.organizer_id,
+  attendees: meeting.attendees || [],
+  canceled: meeting.canceled,
+  color: meeting.color,
+  department: meeting.department,
+  meetingType: meeting.meeting_type,
+}));
 }
 
 export async function createMeeting(meeting: MeetingPayload): Promise<CalendarEvent> {

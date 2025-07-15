@@ -223,7 +223,7 @@ const handleSelectSlot = useCallback(
         event={tooltipEvent}
         position={tooltipPosition}
         onClick={handleTooltipClick}
-        onClose={handleCloseTooltip} onEdit={function (event: CalendarEvent): void {
+        onClose={handleCloseTooltip} onEdit={function (): void {
           throw new Error('Function not implemented.');
         } }      />
     </div>

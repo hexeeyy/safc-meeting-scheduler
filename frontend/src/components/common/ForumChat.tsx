@@ -9,8 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { Send, Users, MoreVertical, HomeIcon } from "lucide-react"
-import { HomeModernIcon } from "@heroicons/react/20/solid"
+import { Send, Users, HomeIcon } from "lucide-react"
 
 interface User {
   id: string
@@ -84,7 +83,7 @@ export default function ChatApp() {
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [newMessage, setNewMessage] = useState("")
   const [currentUser] = useState<User>(mockUsers[0]) // Simulate current user as Alice
-  const [onlineUsers, setOnlineUsers] = useState<User[]>(mockUsers)
+  const [onlineUsers] = useState<User[]>(mockUsers)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
