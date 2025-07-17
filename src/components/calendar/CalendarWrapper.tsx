@@ -22,8 +22,6 @@ export default function CalendarWrapper({
   setModalOpen,
   setPendingSlot,
   onEditEvent,
-  modalOpen,
-  pendingSlot,
 }: CalendarWrapperProps) {
   const [date, setDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>('month');

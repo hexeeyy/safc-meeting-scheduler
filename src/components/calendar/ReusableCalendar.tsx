@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-big-calendar';
 import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop';
-import { format, parse, startOfWeek, getDay, addMonths, setDate, setHours, setMinutes } from 'date-fns';
+import { format, parse, startOfWeek, getDay, addMonths } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
