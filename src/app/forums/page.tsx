@@ -1,6 +1,6 @@
 'use client';
 
-import ChatApp from '@/components/common/ForumChat';
+import ChatApp from '@/app/forums/ForumChat';
 
 export default function HomePage() {
   return (
