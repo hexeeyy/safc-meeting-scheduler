@@ -1,0 +1,19 @@
+# Environment Variables Template for SAFC Meeting Scheduler
+# Copy this file to .env.local and fill in your actual values
+
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# NextAuth Configuration
+NEXTAUTH_SECRET=your_nextauth_secret_here
+NEXTAUTH_URL=http://localhost:3000
+
+# Instructions:
+# 1. Go to your Supabase project dashboard
+# 2. Navigate to Settings > API
+# 3. Copy the Project URL to NEXT_PUBLIC_SUPABASE_URL
+# 4. Copy the anon/public key to NEXT_PUBLIC_SUPABASE_ANON_KEY
+# 5. Copy the service_role key to SUPABASE_SERVICE_ROLE_KEY
+# 6. Generate a random string for NEXTAUTH_SECRET (you can use: openssl rand -base64 32)

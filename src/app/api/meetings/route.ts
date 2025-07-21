@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase';
+import { supabaseClient } from '@/lib/supabase';
 import { requireAuth, createAuthResponse } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth(request);
-    const supabase = createServerSupabaseClient();
+    const user = await requireAuth();
+    const supabase = supabaseClient;
     
     const { searchParams } = new URL(request.url);
     const startDate = searchParams.get('start_date');
@@ -57,8 +57,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireAuth(request);
-    const supabase = createServerSupabaseClient();
+    const user = await requireAuth();
+    const supabase = supabaseClient;
     
     const body = await request.json();
     const {

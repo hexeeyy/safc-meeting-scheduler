@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from './supabase';
+import { supabaseClient } from './supabase';
 
-export async function getAuthenticatedUser(request: NextRequest) {
+export async function getAuthenticatedUser() {
   try {
-    const supabase = createServerSupabaseClient();
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabaseClient.auth.getUser();
     
     if (error || !user) {
       return null;
@@ -24,8 +23,8 @@ export function createAuthResponse(message: string, status: number = 401) {
   );
 }
 
-export async function requireAuth(request: NextRequest) {
-  const user = await getAuthenticatedUser(request);
+export async function requireAuth() {
+  const user = await getAuthenticatedUser();
   
   if (!user) {
     throw new Error('Authentication required');

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/lib/supabase';
+import { supabaseClient } from '@/lib/supabase';
 import { requireAuth, createAuthResponse } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth(request);
-    const supabase = createServerSupabaseClient();
+    const user = await requireAuth();
+    const supabase = supabaseClient;
     
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id') || user.id;
