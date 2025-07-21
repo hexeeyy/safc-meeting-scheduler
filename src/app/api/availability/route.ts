@@ -7,21 +7,24 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth(request);
     const supabase = createServerSupabaseClient();
     
-    const { data: userProfile, error } = await supabase
-      .from('users')
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('user_id') || user.id;
+    
+    const { data: availability, error } = await supabase
+      .from('availability')
       .select('*')
-      .eq('id', user.id)
-      .single();
+      .eq('user_id', userId)
+      .order('day_of_week', { ascending: true });
     
     if (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('Error fetching availability:', error);
       return NextResponse.json(
-        { error: 'Failed to fetch user profile' },
+        { error: 'Failed to fetch availability' },
         { status: 500 }
       );
     }
     
-    return NextResponse.json({ user: userProfile });
+    return NextResponse.json({ availability });
   } catch (error) {
     if (error instanceof Error && error.message === 'Authentication required') {
       return createAuthResponse('Authentication required');
@@ -35,42 +38,43 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth(request);
     const supabase = createServerSupabaseClient();
     
     const body = await request.json();
-    const { name, avatar_url, department } = body;
+    const { day_of_week, start_time, end_time, is_available } = body;
     
-    const updateData: any = {};
-    if (name !== undefined) updateData.name = name;
-    if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
-    if (department !== undefined) updateData.department = department;
-    
-    if (Object.keys(updateData).length === 0) {
+    // Validate required fields
+    if (day_of_week === undefined || !start_time || !end_time || is_available === undefined) {
       return NextResponse.json(
-        { error: 'No valid fields to update' },
+        { error: 'day_of_week, start_time, end_time, and is_available are required' },
         { status: 400 }
       );
     }
     
-    const { data: updatedUser, error } = await supabase
-      .from('users')
-      .update(updateData)
-      .eq('id', user.id)
+    const { data: availability, error } = await supabase
+      .from('availability')
+      .insert({
+        user_id: user.id,
+        day_of_week,
+        start_time,
+        end_time,
+        is_available
+      })
       .select()
       .single();
     
     if (error) {
-      console.error('Error updating user profile:', error);
+      console.error('Error creating availability:', error);
       return NextResponse.json(
-        { error: 'Failed to update user profile' },
+        { error: 'Failed to create availability' },
         { status: 500 }
       );
     }
     
-    return NextResponse.json({ user: updatedUser });
+    return NextResponse.json({ availability }, { status: 201 });
   } catch (error) {
     if (error instanceof Error && error.message === 'Authentication required') {
       return createAuthResponse('Authentication required');
