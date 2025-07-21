@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import "./globals.css"; 
-import React from "react";
-import Footer from "@/components/common/Footer";
+import "./globals.css";
+import ClientLayout from "./ClientLayout";
 
+// Configure Poppins font (unchanged)
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"], // choose the weights you need
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-poppins",
   display: "swap",
 });
 
+// Metadata (unchanged from your original)
 export const metadata: Metadata = {
   title: {
     default: "SAFC - Meeting Scheduler",
@@ -43,13 +44,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={poppins.variable}>
-      <body className="font-poppins bg-gray-100">
-        <div className="flex min-h-screen flex-col">
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </div>
+      <body className="font-poppins bg-gray-100 antialiased">
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
 }
-
