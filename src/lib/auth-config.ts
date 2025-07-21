@@ -4,6 +4,40 @@ import { supabaseClient } from './supabase';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginSchema } from '@/schema/auth/login.schema';
 
+// Extend the Session user type to include 'role' and 'department'
+import { Session } from 'next-auth';
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string;
+      department?: string;
+      avatar_url?: string;
+    };
+  }
+  interface User {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string;
+    department?: string;
+    avatar_url?: string;
+  }
+}
+
+declare module 'next-auth/adapters' {
+  interface AdapterUser {
+    role?: string;
+    department?: string;
+    avatar_url?: string;
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: SupabaseAdapter({
     url: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -91,7 +125,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user.id = token.sub!;
         session.user.role = token.role as string;
         session.user.department = token.department as string;
@@ -101,7 +135,6 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/login',
-    signUp: '/signup',
     error: '/auth/error',
   },
   secret: process.env.NEXTAUTH_SECRET,

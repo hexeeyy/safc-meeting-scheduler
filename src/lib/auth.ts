@@ -23,7 +23,7 @@ export function createAuthResponse(message: string, status: number = 401) {
   );
 }
 
-export async function requireAuth() {
+export async function requireAuth(request: NextRequest) {
   const user = await getAuthenticatedUser();
   
   if (!user) {

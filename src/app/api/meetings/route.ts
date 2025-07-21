@@ -4,7 +4,7 @@ import { requireAuth, createAuthResponse } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth();
+    const user = await requireAuth(request);
     const supabase = supabaseClient;
     
     const { searchParams } = new URL(request.url);
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await requireAuth();
+    const user = await requireAuth(request);
     const supabase = supabaseClient;
     
     const body = await request.json();
@@ -106,11 +106,18 @@ export async function POST(request: NextRequest) {
     }
     
     // Add the creator as an organizer
-    const attendeeInserts = [
+    type AttendeeStatus = 'accepted' | 'invited';
+
+    const attendeeInserts: {
+      meeting_id: number;
+      user_id: string;
+      status: AttendeeStatus;
+      is_organizer: boolean;
+    }[] = [
       {
         meeting_id: meeting.id,
         user_id: user.id,
-        status: 'accepted' as const,
+        status: 'accepted',
         is_organizer: true
       }
     ];
@@ -122,7 +129,7 @@ export async function POST(request: NextRequest) {
           attendeeInserts.push({
             meeting_id: meeting.id,
             user_id: attendeeId,
-            status: 'invited' as const,
+            status: 'invited',
             is_organizer: false
           });
         }

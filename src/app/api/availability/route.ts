@@ -4,7 +4,7 @@ import { requireAuth, createAuthResponse } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth();
+    const user = await requireAuth(request);
     const supabase = supabaseClient;
     
     const { searchParams } = new URL(request.url);
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth(request);
-    const supabase = createServerSupabaseClient();
+    const supabase = supabaseClient;
     
     const body = await request.json();
     const { day_of_week, start_time, end_time, is_available } = body;
@@ -87,3 +87,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
