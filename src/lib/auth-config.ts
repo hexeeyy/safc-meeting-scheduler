@@ -4,9 +4,6 @@ import { supabaseClient } from './supabase';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginSchema } from '@/schema/auth/login.schema';
 
-// Extend the Session user type to include 'role' and 'department'
-import { Session } from 'next-auth';
-
 declare module 'next-auth' {
   interface Session {
     user: {

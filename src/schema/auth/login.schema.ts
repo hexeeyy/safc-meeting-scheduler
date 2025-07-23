@@ -29,7 +29,7 @@ export const signupSchema = z.object({
     .min(1, 'Name is required')
     .min(2, 'Name must be at least 2 characters')
     .max(50, 'Name must be less than 50 characters'),
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data: { password: any; confirmPassword: any; }) => data.password === data.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 });
@@ -50,7 +50,7 @@ export const resetPasswordSchema = z.object({
   confirmPassword: z
     .string()
     .min(1, 'Please confirm your password'),
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data: { password: any; confirmPassword: any; }) => data.password === data.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 });
