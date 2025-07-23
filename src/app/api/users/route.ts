@@ -4,7 +4,7 @@ import { requireAuth, createAuthResponse } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await requireAuth();
+    const user = await requireAuth(request);
     const supabase = supabaseClient;
     
     const { searchParams } = new URL(request.url);
